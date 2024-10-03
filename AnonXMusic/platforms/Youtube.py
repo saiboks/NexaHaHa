@@ -10,7 +10,7 @@ from pyrogram.types import Message
 from youtubesearchpython.__future__ import VideosSearch
 
 from AnonXMusic.utils.database import is_on_off
-from AnonXMu.sic.utils.formatters import time_to_seconds
+from AnonXMusic.utils.formatters import time_to_seconds
 
 
 
