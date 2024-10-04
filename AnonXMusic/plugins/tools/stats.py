@@ -27,6 +27,7 @@ async def stats_global(client, message: Message, _):
         photo=config.STATS_IMG_URL,
         caption=_["gstats_2"].format(app.mention),
         reply_markup=upl,
+        quote=True  # Yeh line message ko quote format mein display karega
     )
 
 
