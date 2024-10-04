@@ -39,7 +39,7 @@ async def get_link_group(client, message):
             upload_path = api.upload_image(local_path)
 
             await text.edit_text(
-                f"<code>{upload_path}</code>",
+                f"<b>● ᴅᴏɴᴇ !</b>\n<b>● ʀᴇϙᴜᴇꜱᴛᴇᴅ ʙʏ ➠</b> {message.from_user.mention}\n<b>● ᴜᴘʟᴏᴀᴅ ʙʏ ➠</b> {app.mention}\n<b>● ʟɪɴᴋ ➠</b> <code>{upload_path}</code>",
                 reply_markup=InlineKeyboardMarkup(
                     [
                         [
