@@ -49,9 +49,9 @@ async def get_thumb(videoid):
         youtube = Image.open(f"cache/thumb{videoid}.png")
         image1 = changeImageSize(1280, 720, youtube)
         image2 = image1.convert("RGBA")
-        background = image2  # Blur effect ko pehle hi remove kar chuke hain
+        background = image2  # Blur effect has already been removed
 
-        # Bas bot ka name likha jaega
+        # Bus bot's name will be written
         draw = ImageDraw.Draw(background)
         arial = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 30)
         draw.text((1110, 8), unidecode(app.name), fill="white", font=arial)
