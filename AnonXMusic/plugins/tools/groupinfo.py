@@ -1,14 +1,8 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from AnonXMusic import app
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-EVAA = [
-    [
-        InlineKeyboardButton(text="ᴀᴅᴅ ᴍᴇ ʙᴀʙʏ", url=f"https://t.me/novauibot?startgroup=true"),
-    ],
-]
-
+# Command to get group information based on username
 @app.on_message(filters.command("groupinfo", prefixes="/"))
 async def get_group_status(_, message: Message):
     if len(message.command) != 2:
@@ -36,21 +30,27 @@ async def get_group_status(_, message: Message):
         f"<b>● ᴅᴇsᴄʀɪᴘᴛɪᴏɴ ➠</b> \n{group_description or 'N/A'}"
     )
 
-    await message.reply((response_text),reply_markup=InlineKeyboardMarkup(EVAA),)
+    await message.reply(response_text)
 
 
-
-# Command handler to get group status
+# Command to get the status of the current group
 @app.on_message(filters.command("status") & filters.group)
-def group_status(client, message):
+async def group_status(client, message: Message):
     chat = message.chat  # Chat where the command was sent
-    status_text = f"● ɢʀᴏᴜᴘ ɪᴅ ➥ {chat.id}\n" \
-                  f"● ᴛɪᴛʟᴇ ➥ {chat.title}\n" \
-                  f"● ᴛʏᴘᴇ ➥ {chat.type}\n"
+    status_text = (
+        f"● ɢʀᴏᴜᴘ ɪᴅ ➥ {chat.id}\n"
+        f"● ᴛɪᴛʟᴇ ➥ {chat.title}\n"
+        f"● ᴛʏᴘᴇ ➥ {chat.type}\n"
+    )
 
     if chat.username:  # Not all groups have a username
-        status_text += f"● ᴜsᴇʀɴᴀᴍᴇ ➥ @{chat.username}"
+        status_text += f"● ᴜsᴇʀɴᴀᴍᴇ ➥ @{chat.username}\n"
     else:
-        status_text += "Username: None"
+        status_text += "● ᴜsᴇʀɴᴀᴍᴇ ➥ None\n"
 
-    message.reply_text((status_text),reply_markup=InlineKeyboardMarkup(EVAA),)
+    await message.reply_text(status_text)
+
+
+# Running the bot
+if __name__ == "__main__":
+    app.run()
