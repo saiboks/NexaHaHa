@@ -41,7 +41,7 @@ async def active_afk(_, message: Message):
                 else:
                     send = await message.reply_animation(
                         data,
-                        caption=f"⬤ **{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\n✽ ʀᴇᴀsᴏɴ ➠ `{reasonafk}`",
+                        caption=f"⬤ **{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\n<b>⬤ ʀᴇᴀsᴏɴ ➠</b> {reasonafk}",
                     )
             if afktype == "photo":
                 if str(reasonafk) == "None":
@@ -52,7 +52,7 @@ async def active_afk(_, message: Message):
                 else:
                     send = await message.reply_photo(
                         photo=f"downloads/{user_id}.jpg",
-                        caption=f"⬤ **{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\n✽ ʀᴇᴀsᴏɴ ➠`{reasonafk}`",
+                        caption=f"⬤ **{message.from_user.first_name}** ɪs ʙᴀᴄᴋ ᴏɴʟɪɴᴇ ᴀɴᴅ ᴡᴀs ᴀᴡᴀʏ ғᴏʀ {seenago}\n\n<b>⬤ ʀᴇᴀsᴏɴ ➠</b>`{reasonafk}`",
                     )
         except Exception:
             send = await message.reply_text(
