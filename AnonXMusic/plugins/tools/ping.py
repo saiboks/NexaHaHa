@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from pyrogram import filters
 from pyrogram.types import Message
 
@@ -15,14 +14,23 @@ from config import BANNED_USERS, PING_IMG_URL
 @language
 async def ping_com(client, message: Message, _):
     start = datetime.now()
+
+    # Pehle image ke saath reply karo
     response = await message.reply_photo(
         photo=PING_IMG_URL,
-        caption=_["ping_1"].format(app.mention),
+        caption="{0} ɪs ᴘɪɴɢɪɴɢ...".format(app.mention),  # App mention will replace {0}
     )
-    pytgping = await Anony.ping()
-    UP, CPU, RAM, DISK = await bot_sys_stats()
-    resp = (datetime.now() - start).microseconds / 1000
-    await response.edit_text(
-        _["ping_2"].format(resp, app.mention, UP, RAM, CPU, DISK, pytgping),
-        reply_markup=supp_markup(_),
+
+    # Ping aur system stats calculate karo
+    pytgping = await Anony.ping()  # Checking Py-TGCalls ping
+    UP, CPU, RAM, DISK = await bot_sys_stats()  # Fetch system stats
+    resp = (datetime.now() - start).microseconds / 1000  # Time calculation
+
+    # Image ko delete karo
+    await response.delete()
+
+    # Stats ke saath reply karo
+    await message.reply_text(
+        _["ping_2"].format(resp, app.mention, UP, RAM, CPU, DISK, pytgping),  # Formatting stats
+        reply_markup=supp_markup(_),  # Optional button markup
     )
