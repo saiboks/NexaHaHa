@@ -1,3 +1,4 @@
+from config import OWNER_ID
 from pyrogram import filters, Client
 from AnonXMusic import app
 from pyrogram.types import ChatPrivileges, ChatPermissions, Message
@@ -8,7 +9,7 @@ import asyncio
 import logging
 
 # Check if user has admin rights
-async def is_administrator(user_id: int, message,client):
+async def is_administrator(user_id: int, message, client):
     admin = False
     administrators = []
     async for m in app.get_chat_members(message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS):
@@ -18,8 +19,8 @@ async def is_administrator(user_id: int, message,client):
             admin = True
             break
     return admin
-async def is_admin(user_id: int, message):
 
+async def is_admin(user_id: int, message):
     administrators = []
     async for m in app.get_chat_members(message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS):
         administrators.append(m)
@@ -50,8 +51,8 @@ async def promoteFunc(client, message):
         return
 
     bot = (await client.get_chat_member(message.chat.id, client.me.id)).privileges
-    if user == client.me.id:
-        await message.reply("You cannot promote yourself.")
+    if user == client.me.id and message.from_user.id != OWNER_ID:
+        await message.reply("You cannot promote yourself unless you're the owner.")
         return
 
     if not bot or not bot.can_promote_members:
