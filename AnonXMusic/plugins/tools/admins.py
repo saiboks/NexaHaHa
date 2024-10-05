@@ -110,6 +110,7 @@ async def demoteFunc(client, message):
             await message.reply("Invalid command usage.")
             return
 
+        # Get user mention for feedback
         umention = (await client.get_users(user)).mention
     except Exception:
         await message.reply("Invalid ID")
@@ -128,6 +129,11 @@ async def demoteFunc(client, message):
         await message.reply("You cannot demote yourself unless you're the owner.")
         return
 
+    # Check if the message sender is an admin
+    if not await is_administrator(message.from_user.id, message, client):
+        await message.reply("You do not have the permission to demote members.")
+        return
+
     try:
         await message.chat.promote_member(user_id=user,
             privileges=ChatPrivileges(
@@ -140,6 +146,6 @@ async def demoteFunc(client, message):
                 can_manage_chat=False,
                 can_manage_video_chats=False,
             ))
-        await message.reply("User has been demoted successfully.")
+        await message.reply(f"{umention} has been demoted successfully.")
     except Exception as err:
         await message.reply(f"Error: {err}")
