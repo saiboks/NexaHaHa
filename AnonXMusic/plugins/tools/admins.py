@@ -50,31 +50,33 @@ async def promoteFunc(client, message):
         await message.reply("User not found.")
         return
 
-    bot = (await client.get_chat_member(message.chat.id, client.me.id)).privileges
+    bot_member = await client.get_chat_member(message.chat.id, client.me.id)
+    bot_privileges = bot_member.privileges
     
+    # Check if the bot has permission to promote members
+    if not bot_privileges or not bot_privileges.can_promote_members:
+        await message.reply("I don't have the permission to promote members.")
+        return
+
     # Check if the user is trying to promote themselves and they are not the owner
     if user == message.from_user.id and message.from_user.id != OWNER_ID:
         await message.reply("You cannot promote yourself unless you're the owner.")
         return
 
-    # Check if the bot has permission to promote members
-    if not bot or not bot.can_promote_members:
-        await message.reply("I don't have the permission to promote members.")
-        return
-
+    # Now attempt to promote the user
     try:
         if message.command[0] == "fullpromote":
             await message.chat.promote_member(
                 user_id=user,
                 privileges=ChatPrivileges(
-                    can_change_info=bot.can_change_info,
-                    can_invite_users=bot.can_invite_users,
-                    can_delete_messages=bot.can_delete_messages,
-                    can_restrict_members=bot.can_restrict_members,
-                    can_pin_messages=bot.can_pin_messages,
-                    can_promote_members=bot.can_promote_members,
-                    can_manage_chat=bot.can_manage_chat,
-                    can_manage_video_chats=bot.can_manage_video_chats,
+                    can_change_info=bot_privileges.can_change_info,
+                    can_invite_users=bot_privileges.can_invite_users,
+                    can_delete_messages=bot_privileges.can_delete_messages,
+                    can_restrict_members=bot_privileges.can_restrict_members,
+                    can_pin_messages=bot_privileges.can_pin_messages,
+                    can_promote_members=bot_privileges.can_promote_members,
+                    can_manage_chat=bot_privileges.can_manage_chat,
+                    can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
             await message.reply("User has been fully promoted.")
@@ -83,13 +85,13 @@ async def promoteFunc(client, message):
                 user_id=user,
                 privileges=ChatPrivileges(
                     can_change_info=False,
-                    can_invite_users=bot.can_invite_users,
-                    can_delete_messages=bot.can_delete_messages,
+                    can_invite_users=bot_privileges.can_invite_users,
+                    can_delete_messages=bot_privileges.can_delete_messages,
                     can_restrict_members=False,
-                    can_pin_messages=bot.can_pin_messages,
+                    can_pin_messages=bot_privileges.can_pin_messages,
                     can_promote_members=False,
-                    can_manage_chat=bot.can_manage_chat,
-                    can_manage_video_chats=bot.can_manage_video_chats,
+                    can_manage_chat=bot_privileges.can_manage_chat,
+                    can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
             await message.reply("User has been promoted.")
@@ -111,6 +113,14 @@ async def demoteFunc(client, message):
         umention = (await client.get_users(user)).mention
     except Exception:
         await message.reply("Invalid ID")
+        return
+
+    bot_member = await client.get_chat_member(message.chat.id, client.me.id)
+    bot_privileges = bot_member.privileges
+
+    # Check if the bot has permission to demote members
+    if not bot_privileges or not bot_privileges.can_promote_members:
+        await message.reply("I don't have the permission to demote members.")
         return
 
     try:
