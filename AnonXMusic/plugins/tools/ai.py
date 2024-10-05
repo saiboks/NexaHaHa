@@ -31,9 +31,9 @@ async def chat_gpt(bot, message):
                 end_time = time.time()
                 telegram_ping = str(round((end_time - start_time) * 1000, 3)) + " ms"
                 await message.reply_text(
-                     f"🪐 {response.strip()}  \n\n**⬤ ᴀɴsᴡᴇʀɪɴɢ ʙʏ ➠ {app.mention}**",
-                    parse_mode=ParseMode.MARKDOWN
-                )
+    f"🪐 {response.strip()}  \n\n**⬤ ᴀɴsᴡᴇʀɪɴɢ ʙʏ ➠ {message.from_user.first_name}**",
+    parse_mode=ParseMode.MARKDOWN
+)
             else:
                 await message.reply_text("No answer found in the response.")
     except Exception as e:
