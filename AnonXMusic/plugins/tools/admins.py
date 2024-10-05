@@ -1,4 +1,5 @@
 from pyrogram import filters, Client
+from AnonXMusic import app
 from pyrogram.types import ChatPrivileges, ChatPermissions, Message
 from pyrogram.types import *
 from pyrogram.enums import ChatMembersFilter, ChatType
@@ -28,7 +29,7 @@ async def is_admin(user_id: int, message):
         return False
 
 
-@Client.on_message(filters.command(["promote", "fullpromote"], "."))
+@app.on_message(filters.command(["promote", "fullpromote"], "."))
 async def promoteFunc(client, message):
     try:
         if message.reply_to_message:
@@ -92,7 +93,7 @@ async def promoteFunc(client, message):
         await message.reply(f"An error occurred: {err}")
 
 
-@Client.on_message(filters.command(["demote"], "."))
+@app.on_message(filters.command(["demote"], "."))
 async def demoteFunc(client, message):
     try:
         if message.reply_to_message:
