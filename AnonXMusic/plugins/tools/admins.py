@@ -28,7 +28,7 @@ async def is_admin(user_id: int, message):
         return False
 
 
-@Client.on_message(filters.command(["promote", "fullpromote"], ".") & ~filters.private & filters.me)
+@Client.on_message(filters.command(["promote", "fullpromote"], "."))
 async def promoteFunc(client, message):
     try:
         if message.reply_to_message:
@@ -36,35 +36,25 @@ async def promoteFunc(client, message):
         elif len(message.command) > 1:
             user = message.text.split(None, 1)[1]
         else:
-            await message.edit_text("Invalid command usage.")
-            await asyncio.sleep(5)
-            await message.delete()
+            await message.reply("Invalid command usage.")
             return
 
         umention = (await client.get_users(user)).mention
     except Exception:
-        await message.edit_text("Invalid ID or user not found.")
-        await asyncio.sleep(5)
-        await message.delete()
+        await message.reply("Invalid ID or user not found.")
         return
 
     if not user:
-        await message.edit_text("User not found.")
-        await asyncio.sleep(5)
-        await message.delete()
+        await message.reply("User not found.")
         return
 
     bot = (await client.get_chat_member(message.chat.id, client.me.id)).privileges
     if user == client.me.id:
-        await message.edit_text("You cannot promote yourself.")
-        await asyncio.sleep(5)
-        await message.delete()
+        await message.reply("You cannot promote yourself.")
         return
 
     if not bot or not bot.can_promote_members:
-        await message.edit_text("I don't have the permission to promote members.")
-        await asyncio.sleep(5)
-        await message.delete()
+        await message.reply("I don't have the permission to promote members.")
         return
 
     try:
@@ -82,7 +72,7 @@ async def promoteFunc(client, message):
                     can_manage_video_chats=bot.can_manage_video_chats,
                 ),
             )
-            final_msg = await message.edit_text("User has been fully promoted.")
+            await message.reply("User has been fully promoted.")
         else:
             await message.chat.promote_member(
                 user_id=user,
@@ -97,29 +87,26 @@ async def promoteFunc(client, message):
                     can_manage_video_chats=bot.can_manage_video_chats,
                 ),
             )
-            final_msg = await message.edit_text("User has been promoted.")
+            await message.reply("User has been promoted.")
     except Exception as err:
-        await message.edit_text(f"An error occurred: {err}")
-        await asyncio.sleep(5)
-        await message.delete()
-    else:
-        await asyncio.sleep(5)
-        await final_msg.delete()
+        await message.reply(f"An error occurred: {err}")
 
 
-@Client.on_message(filters.command(["demote"], ".") & ~filters.private & filters.me)
+@Client.on_message(filters.command(["demote"], "."))
 async def demoteFunc(client, message):
     try:
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
         elif not message.reply_to_message and len(message.command) != 1:
             user = message.text.split(None, 1)[1]
+        else:
+            await message.reply("Invalid command usage.")
+            return
 
         umention = (await client.get_users(user)).mention
-    except:
-        error_msg = await message.edit("Invalid ID")
-        await asyncio.sleep(5)
-        return await error_msg.delete()
+    except Exception:
+        await message.reply("Invalid ID")
+        return
 
     try:
         await message.chat.promote_member(user_id=user,
@@ -127,17 +114,12 @@ async def demoteFunc(client, message):
                 can_change_info=False,
                 can_invite_users=False,
                 can_delete_messages=False,
-
                 can_restrict_members=False,
                 can_pin_messages=False,
                 can_promote_members=False,
                 can_manage_chat=False,
                 can_manage_video_chats=False,
             ))
-        success_msg = await message.edit("Successfully Demoted")
-        await asyncio.sleep(5)
-        await success_msg.delete()
+        await message.reply("Successfully demoted.")
     except Exception as err:
-        error_msg = await message.edit(f"Error: {err}")
-        await asyncio.sleep(5)
-        await error_msg.delete()
+        await message.reply(f"Error: {err}")
