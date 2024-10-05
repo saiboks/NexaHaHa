@@ -1,31 +1,19 @@
 import os
-import future
 import asyncio
 import requests
-import wget
-import time
 import yt_dlp
-from urllib.parse import urlparse
 from youtube_search import YoutubeSearch
-from yt_dlp import YoutubeDL
-
 from AnonXMusic import app
 from pyrogram import filters
-from pyrogram import Client, filters
 from pyrogram.types import Message
-from youtubesearchpython import VideosSearch
-from youtubesearchpython import SearchVideos
-
-
-
 
 # ------------------------------------------------------------------------------- #
 
 @app.on_message(filters.command("song"))
-def download_song(_, message):
+async def download_song(_, message):
     query = " ".join(message.command[1:])  
     print(query)
-    m = message.reply("💌")
+    m = await message.reply("💌")  # Use await here
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -37,36 +25,38 @@ def download_song(_, message):
         open(thumb_name, "wb").write(thumb.content)
         duration = results[0]["duration"]
 
-        # Add these lines to define views and channel_name
         views = results[0]["views"]
         channel_name = results[0]["channel"]
 
     except Exception as e:
-        m.edit("⚠️ ɴᴏ ʀᴇsᴜʟᴛs ᴡᴇʀᴇ ғᴏᴜɴᴅ. ᴍᴀᴋᴇ sᴜʀᴇ ʏᴏᴜ ᴛʏᴘᴇᴅ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ sᴏɴɢ ɴᴀᴍᴇ.")
+        await m.edit("⚠️ ɴᴏ ʀᴇsᴜʟᴛs ᴡᴇʀᴇ ғᴏᴜɴᴅ. ᴍᴀᴋᴇ sᴜʀᴇ ʏᴏᴜ ᴛʏᴘᴇᴅ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ sᴏɴɢ ɴᴀᴍᴇ.")
         print(str(e))
         return
-    m.edit("📥 ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ...")
+
+    await m.edit("📥 ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ...")  # Use await here
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=False)
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
+        
         secmul, dur, dur_arr = 1, 0, duration.split(":")
         for i in range(len(dur_arr) - 1, -1, -1):
             dur += int(float(dur_arr[i])) * secmul
             secmul *= 60
-        m.edit("📤 ᴜᴘʟᴏᴀᴅɪɴɢ...")
+        
+        await m.edit("📤 ᴜᴘʟᴏᴀᴅɪɴɢ...")  # Use await here
 
-        message.reply_audio(
+        await message.reply_audio(
             audio_file,
             thumb=thumb_name,
             title=title,
-            caption=f"⬤ {title}\n\n● ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ ➥ {message.from_user.mention}\n● ᴠɪᴇᴡs ➥ {views}\n● ᴄʜᴀɴɴᴇʟ ➥ {channel_name}\n\n⬤ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ➠ {app.mention}",
+            caption=f"⬤ {title}\n\n● ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ ➥ {message.from_user.mention}\n● ᴠɪᴇᴡs ➥ {views}\n● ᴄʜᴀɴɴᴇʟ ➥ {channel_name}\n\n⬤ ᴘᴏᴡᴇʀᴇᴅ ʙʏ ➠ @{app.username}",
             duration=dur
         )
-        m.delete()
+        await m.delete()  # Use await here
     except Exception as e:
-        m.edit(" - An error !!")
+        await m.edit(" - An error occurred!")  # Use await here
         print(e)
 
     try:
@@ -74,7 +64,5 @@ def download_song(_, message):
         os.remove(thumb_name)
     except Exception as e:
         print(e)
-
-
 
 # ------------------------------------------------------------------------------- #
