@@ -18,7 +18,7 @@ async def chat_gpt(bot, message):
 
         if len(message.command) < 2:
             await message.reply_text(
-                "⬤ ᴇxᴀᴍᴘʟᴇ ➠ /ask Where is TajMahal ?"
+                "⬤ ᴇxᴀᴍᴘʟᴇ ➠ /ask Where is TajMahal ?"
             )
         else:
             question = message.text.split(' ', 1)[1]
@@ -26,14 +26,18 @@ async def chat_gpt(bot, message):
             # Using TheApi's `chatgpt()` method to get the response
             response = api.chatgpt(question)
 
+            # Fetching bot's name using get_me()
+            bot_info = await bot.get_me()
+            bot_name = bot_info.first_name
+
             # Assuming `response` is directly the answer or response in a string format
             if response:
                 end_time = time.time()
                 telegram_ping = str(round((end_time - start_time) * 1000, 3)) + " ms"
                 await message.reply_text(
-    f"🪐 {response.strip()}  \n\n**⬤ ᴀɴsᴡᴇʀɪɴɢ ʙʏ ➠ @{BOT_USERNAME}**",
-    parse_mode=ParseMode.MARKDOWN
-)
+                    f"🪐 {response.strip()}  \n\n**⬤ ᴀɴsᴡᴇʀɪɴɢ ʙʏ ➠ {bot_name}**",
+                    parse_mode=ParseMode.MARKDOWN
+                )
             else:
                 await message.reply_text("No answer found in the response.")
     except Exception as e:
