@@ -29,13 +29,14 @@ async def chat_gpt(bot, message):
             # Fetching bot's name using get_me()
             bot_info = await bot.get_me()
             bot_name = bot_info.first_name
+            bot_id = bot_info.id
 
             # Assuming `response` is directly the answer or response in a string format
             if response:
                 end_time = time.time()
                 telegram_ping = str(round((end_time - start_time) * 1000, 3)) + " ms"
                 await message.reply_text(
-                    f"🪐 {response.strip()}  \n\n**⬤ ᴀɴsᴡᴇʀɪɴɢ ʙʏ ➠ {bot_name}**",
+                    f"🪐 {response.strip()}  \n\n**⬤ ᴀɴsᴡᴇʀɪɴɢ ʙʏ ➠ [{bot_name}](tg://user?id={bot_id})**",
                     parse_mode=ParseMode.MARKDOWN
                 )
             else:
