@@ -18,7 +18,7 @@ async def chat_gpt(bot, message):
 
         if len(message.command) < 2:
             await message.reply_text(
-                "⬤ ᴇxᴀᴍᴘʟᴇ ➠ /ask Where is TajMahal ?"
+                "**⬤ ᴇxᴀᴍᴘʟᴇ ➠** `/ask Where is TajMahal ?`"
             )
         else:
             question = message.text.split(' ', 1)[1]
