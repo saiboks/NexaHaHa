@@ -19,9 +19,11 @@ pyyaml
 requests
 speedtest-cli
 spotipy
+wget
 tgcrypto
 unidecode
 yt-dlp
 youtube-search
 youtube-search-python
 git+https://github.com/Vivekkumar-IN/TheApi@main
+pytz
