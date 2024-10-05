@@ -104,7 +104,7 @@ async def demoteFunc(client, message):
     try:
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
-        elif not message.reply_to_message and len(message.command) != 1:
+        elif not message.reply_to_message and len(message.command) > 1:
             user = message.text.split(None, 1)[1]
         else:
             await message.reply("Invalid command usage.")
@@ -123,6 +123,11 @@ async def demoteFunc(client, message):
         await message.reply("I don't have the permission to demote members.")
         return
 
+    # Check if the user is trying to demote themselves and they are not the owner
+    if user == message.from_user.id and message.from_user.id != OWNER_ID:
+        await message.reply("You cannot demote yourself unless you're the owner.")
+        return
+
     try:
         await message.chat.promote_member(user_id=user,
             privileges=ChatPrivileges(
@@ -135,6 +140,6 @@ async def demoteFunc(client, message):
                 can_manage_chat=False,
                 can_manage_video_chats=False,
             ))
-        await message.reply("Successfully demoted.")
+        await message.reply("User has been demoted successfully.")
     except Exception as err:
         await message.reply(f"Error: {err}")
