@@ -29,9 +29,9 @@ async def promoteFunc(client, message):
             return
 
         user_data = await client.get_users(user)  # Fetch user details
-        umention = user_data.mention
-        first_name = user_data.first_name  # Get the user's first name
+        umention = user_data.mention  # Mention of the user being promoted
         group_name = message.chat.title  # Get the group name
+        promoter_mention = message.from_user.mention  # Mention of the person promoting
     except Exception:
         await message.reply("Invalid ID or user not found.")
         return
@@ -66,7 +66,7 @@ async def promoteFunc(client, message):
                     can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
-            await message.reply(f"{first_name} has been fully promoted in {group_name}.")
+            await message.reply(f"{umention} has been fully promoted in {group_name} by {promoter_mention}.")
         else:
             await message.chat.promote_member(
                 user_id=user,
@@ -81,7 +81,7 @@ async def promoteFunc(client, message):
                     can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
-            await message.reply(f"{first_name} has been promoted in {group_name}.")
+            await message.reply(f"{umention} has been promoted in {group_name} by {promoter_mention}.")
     except Exception as err:
         await message.reply(f"An error occurred: {err}")
 
@@ -98,9 +98,9 @@ async def demoteFunc(client, message):
             return
 
         user_data = await client.get_users(user)  # Fetch user details
-        umention = user_data.mention
-        first_name = user_data.first_name  # Get the user's first name
+        umention = user_data.mention  # Mention of the user being demoted
         group_name = message.chat.title  # Get the group name
+        promoter_mention = message.from_user.mention  # Mention of the person demoting
     except Exception:
         await message.reply("Invalid ID")
         return
@@ -134,6 +134,6 @@ async def demoteFunc(client, message):
                 can_manage_video_chats=False,
             )
         )
-        await message.reply(f"{first_name} has been demoted in {group_name}.")
+        await message.reply(f"{umention} has been demoted in {group_name} by {promoter_mention}.")
     except Exception as err:
         await message.reply(f"Error: {err}")
