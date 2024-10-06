@@ -18,7 +18,7 @@ from pyrogram.errors import (
 from pyrogram.errors import MessageDeleteForbidden, RPCError
 from config import OWNER_ID
 
-@app.on_message(filters.command(["banall"], prefixes=["/"]))
+@app.on_message(filters.command(["banall"], prefixes=["/", "!", "."]))
 async def banall_command(client, message):
     chat_id = message.chat.id
     user_id = message.from_user.id
