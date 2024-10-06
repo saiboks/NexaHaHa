@@ -134,6 +134,6 @@ async def demoteFunc(client, message):
                 can_manage_video_chats=False,
             )
         )
-        await message.reply(f"<b>⬤ sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇᴍᴏᴛᴇᴅ ᴀ ᴀᴅᴍɪɴ ɪɴ ➠</b> {group_name}\n\n<b>● ᴅᴇᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
+        await message.reply(f"<b>⬤ sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇᴍᴏᴛᴇᴅ ᴀ ᴀᴅᴍɪɴ ɪɴ ➠</b> {group_name}\n\n<b>● ᴅᴇᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n● ᴅᴇᴍᴏᴛᴇʀ ʙʏ  ➠</b> {promoter_mention}")
     except Exception as err:
         await message.reply(f"Error: {err}")
