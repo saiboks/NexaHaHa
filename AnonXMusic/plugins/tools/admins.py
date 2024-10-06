@@ -79,7 +79,7 @@ async def promoteFunc(client, message):
                     can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
-            await message.reply("⬤ ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠ {chat_title}\n\n● ᴘʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠ {promoted_user.mention}\n● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠ {promoter_user.mention}")
+            await message.reply(f"⬤ ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ <b>➥ {chat.title}</b>\n\n<b>● ᴘʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠ {mention_html(user_member.user.id, user_member.user.first_name)}</b>\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠ {mention_html(user.id, user.first_name)}</b>",)
         else:
             await message.chat.promote_member(
                 user_id=user,
