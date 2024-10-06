@@ -66,7 +66,7 @@ async def promoteFunc(client, message):
                     can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
-            await message.reply(f"{umention} has been fully promoted in {group_name} by {promoter_mention}.")
+            await message.reply(f"⬤ ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠ {group_name}\n\n● ᴘʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠ {umention}\n● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠ {promoter_mention}")
         else:
             await message.chat.promote_member(
                 user_id=user,
