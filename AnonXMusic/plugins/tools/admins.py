@@ -1,21 +1,3 @@
-from config import OWNER_ID
-from pyrogram import filters, Client
-from AnonXMusic import app
-from pyrogram.types import ChatPrivileges
-from pyrogram.enums import ChatMembersFilter
-
-# Check if user has admin rights
-async def is_administrator(user_id: int, message, client):
-    admin = False
-    administrators = []
-    async for m in app.get_chat_members(message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS):
-        administrators.append(m)
-    for user in administrators:
-        if user.user.id == user_id:
-            admin = True
-            break
-    return admin
-
 # Promote function
 @app.on_message(filters.command(["promote", "fullpromote"], "."))
 async def promoteFunc(client, message):
@@ -24,6 +6,8 @@ async def promoteFunc(client, message):
             user = message.reply_to_message.from_user.id
         elif len(message.command) > 1:
             user = message.text.split(None, 1)[1]
+            if not user.startswith("@"):  # Ensure the username is in correct format
+                user = "@" + user
         else:
             await message.reply("Invalid command usage.")
             return
@@ -32,8 +16,8 @@ async def promoteFunc(client, message):
         umention = user_data.mention  # Mention of the user being promoted
         group_name = message.chat.title  # Get the group name
         promoter_mention = message.from_user.mention  # Mention of the person promoting
-    except Exception:
-        await message.reply("Invalid ID or user not found.")
+    except Exception as e:
+        await message.reply(f"Invalid ID or user not found. Error: {e}")
         return
 
     if not user:
@@ -49,14 +33,14 @@ async def promoteFunc(client, message):
         return
 
     # Prevent self-promotion unless user is the owner
-    if int(user) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
+    if int(user_data.id) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
         await message.reply("You cannot promote yourself unless you're the owner.")
         return
 
     try:
         if message.command[0] == "fullpromote":
             await message.chat.promote_member(
-                user_id=user,
+                user_id=user_data.id,
                 privileges=ChatPrivileges(
                     can_change_info=bot_privileges.can_change_info,
                     can_invite_users=bot_privileges.can_invite_users,
@@ -71,7 +55,7 @@ async def promoteFunc(client, message):
             await message.reply(f"</b>⬤ ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠</b> {group_name}\n\n<b>● ᴘʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
         else:
             await message.chat.promote_member(
-                user_id=user,
+                user_id=user_data.id,
                 privileges=ChatPrivileges(
                     can_change_info=False,
                     can_invite_users=bot_privileges.can_invite_users,
@@ -95,6 +79,8 @@ async def demoteFunc(client, message):
             user = message.reply_to_message.from_user.id
         elif not message.reply_to_message and len(message.command) > 1:
             user = message.text.split(None, 1)[1]
+            if not user.startswith("@"):  # Ensure the username is in correct format
+                user = "@" + user
         else:
             await message.reply("Invalid command usage.")
             return
@@ -103,8 +89,8 @@ async def demoteFunc(client, message):
         umention = user_data.mention  # Mention of the user being demoted
         group_name = message.chat.title  # Get the group name
         promoter_mention = message.from_user.mention  # Mention of the person demoting
-    except Exception:
-        await message.reply("Invalid ID")
+    except Exception as e:
+        await message.reply(f"Invalid ID or user not found. Error: {e}")
         return
 
     bot_member = await client.get_chat_member(message.chat.id, client.me.id)
@@ -115,18 +101,17 @@ async def demoteFunc(client, message):
         return
 
     # Prevent self-demotion unless user is the owner
-    if int(user) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
+    if int(user_data.id) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
         await message.reply("You cannot demote yourself unless you're the owner.")
         return
 
-    # Check if user has admin privileges
     if not await is_administrator(message.from_user.id, message, client):
         await message.reply("You do not have the permission to demote members.")
         return
 
     try:
         await message.chat.promote_member(
-            user_id=user,
+            user_id=user_data.id,
             privileges=ChatPrivileges(
                 can_change_info=False,
                 can_invite_users=False,
