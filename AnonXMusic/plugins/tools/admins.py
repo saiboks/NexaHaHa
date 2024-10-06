@@ -40,6 +40,7 @@ async def promoteFunc(client, message):
         await message.reply("User not found.")
         return
 
+    # Check if bot has promotion rights
     bot_member = await client.get_chat_member(message.chat.id, client.me.id)
     bot_privileges = bot_member.privileges
 
@@ -47,7 +48,8 @@ async def promoteFunc(client, message):
         await message.reply("I don't have the permission to promote members.")
         return
 
-    if user == message.from_user.id and message.from_user.id != OWNER_ID:
+    # Prevent self-promotion unless user is the owner
+    if int(user) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
         await message.reply("You cannot promote yourself unless you're the owner.")
         return
 
@@ -112,10 +114,12 @@ async def demoteFunc(client, message):
         await message.reply("I don't have the permission to demote members.")
         return
 
-    if user == message.from_user.id and message.from_user.id != OWNER_ID:
+    # Prevent self-demotion unless user is the owner
+    if int(user) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
         await message.reply("You cannot demote yourself unless you're the owner.")
         return
 
+    # Check if user has admin privileges
     if not await is_administrator(message.from_user.id, message, client):
         await message.reply("You do not have the permission to demote members.")
         return
@@ -134,6 +138,6 @@ async def demoteFunc(client, message):
                 can_manage_video_chats=False,
             )
         )
-        await message.reply(f"<b>⬤ sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇᴍᴏᴛᴇᴅ ᴀ ᴀᴅᴍɪɴ ɪɴ ➠</b> {group_name}\n\n<b>● ᴅᴇᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n● ᴅᴇᴍᴏᴛᴇʀ ʙʏ  ➠</b> {promoter_mention}")
+        await message.reply(f"<b>⬤ sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇᴍᴏᴛᴇᴅ ᴀ ᴀᴅᴍɪɴ ɪɴ ➠</b> {group_name}\n\n<b>● ᴅᴇᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
     except Exception as err:
         await message.reply(f"Error: {err}")
