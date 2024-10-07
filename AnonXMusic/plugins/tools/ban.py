@@ -17,7 +17,6 @@ from typing import Dict, Union
 from AnonXMusic import app
 from AnonXMusic.misc import SUDOERS
 from AnonXMusic.core.mongo import mongodb
-from utils.error import capture_err
 from AnonXMusic.utils.keyboard import ikb
 from AnonXMusic.utils.database import save_filter
 from AnonXMusic.utils.functions import (
