@@ -2,7 +2,6 @@ from pyrogram import Client, errors
 from pyrogram.enums import ChatMemberStatus, ParseMode
 
 import config
-
 from ..logging import LOGGER
 
 
@@ -21,6 +20,9 @@ class Anony(Client):
 
     async def start(self):
         await super().start()
+        
+        # Fetch bot details using get_me()
+        self.me = await self.get_me()  # Get the bot's information
         self.id = self.me.id
         self.name = self.me.first_name + " " + (self.me.last_name or "")
         self.username = self.me.username
@@ -42,6 +44,7 @@ class Anony(Client):
             )
             exit()
 
+        # Ensure the bot is an admin in the log group/channel
         a = await self.get_chat_member(config.LOGGER_ID, self.id)
         if a.status != ChatMemberStatus.ADMINISTRATOR:
             LOGGER(__name__).error(
