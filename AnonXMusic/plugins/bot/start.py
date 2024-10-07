@@ -24,6 +24,12 @@ from config import BANNED_USERS
 from strings import get_string
 
 
+import logging
+
+# LOGGER define karo
+logging.basicConfig(level=logging.INFO)
+LOGGER = logging.getLogger(__name__)
+
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
@@ -95,7 +101,7 @@ async def start_pm(client, message: Message, _):
                 # Agar profile pic nahi hai toh default image use karo
                 photo = config.START_IMG_URL
         except Exception as e:
-            LOGGER(__name__).error(f"Profile photos lene mein error: {e}")
+            LOGGER.error(f"Profile photos lene mein error: {e}")
             # Agar error aaye toh default image use karo
             photo = config.START_IMG_URL
 
