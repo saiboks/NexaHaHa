@@ -786,33 +786,11 @@ async def ban_members(chat_id, user_id, bot_permission, total_members, msg):
     )
 
 
-@app.on_message(filters.command("banall") & SUDOERS)
-async def ban_all(_, msg):
-    chat_id = msg.chat.id
-    user_id = msg.from_user.id  # ID of the user who issued the command
-    
-    bot = await app.get_chat_member(chat_id, BOT_ID)
-    bot_permission = bot.privileges.can_restrict_members
-    
-    if bot_permission:
-        total_members = 0
-        async for _ in app.get_chat_members(chat_id):
-            total_members += 1
-        
-        await ban_members(chat_id, user_id, bot_permission, total_members, msg)
-    
-    else:
-        await msg.reply_text(
-            "Either I don't have the right to restrict users or you are not in sudo users"
-        )
-
-
-
 from pyrogram import Client, filters
 from pyrogram.errors import UserNotParticipant, ChatAdminRequired, UserAlreadyParticipant, InviteHashExpired
 
 # Create a bot instance
-from VIPMUSIC import app 
+from AnonXMusic import app 
 
 @app.on_message(filters.command("unbanme"))
 async def unbanme(client, message):
