@@ -4,7 +4,8 @@ from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import ChatPermissions
 from config import OWNER_ID
 
-client = Client("my_bot")  # Define your Client instance
+# Bot token or session config
+client = Client("my_bot", api_id="API_ID", api_hash="API_HASH", bot_token="BOT_TOKEN")
 
 @client.on_message(filters.command(["mute", "tmute"], prefixes=["/"]))
 async def mute_user(client, message):
@@ -100,10 +101,7 @@ async def mute_user(client, message):
     else:
         await message.reply_text("I don't have the permission to mute users.")
 
-# Start the client using asyncio (without client.run())
-async def main():
-    await client.start()
-    await client.idle()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# Start the bot
+client.start()
+print("Bot is running...")
+client.idle()
