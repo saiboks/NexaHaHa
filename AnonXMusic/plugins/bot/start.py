@@ -28,12 +28,22 @@ from strings import get_string
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
+
+    # Fetch user profile photos
+    profile_photos = await client.get_profile_photos(message.from_user.id)
+    if profile_photos.total_count > 0:
+        # User has a profile pic, use it
+        photo = profile_photos.photos[0][-1].file_id  # Get the highest resolution photo
+    else:
+        # No profile pic, use default START_IMG_URL
+        photo = config.START_IMG_URL
+
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
         if name[0:4] == "help":
             keyboard = help_pannel(_)
             return await message.reply_photo(
-                photo=config.START_IMG_URL,
+                photo=photo,  # Use the determined photo (either profile pic or default)
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
             )
@@ -85,19 +95,15 @@ async def start_pm(client, message: Message, _):
     else:
         out = private_panel(_)
         await message.reply_photo(
-            photo=config.START_IMG_URL,
+            photo=photo,  # Use profile pic or default image
             caption=_["start_2"].format(message.from_user.mention, app.mention),
+        )
 
-
-        )  
-
-             # now start_3 send caption with reply_markup
+        # now start_3 send caption with reply_markup
         await message.reply_text(
             text=_["start_3"].format(app.mention),  # second caption (start_3)
             reply_markup=InlineKeyboardMarkup(out),  # with reply_markup
-
-
-        )  
+        )
 
         if await is_on_off(2):
             return await app.send_message(
