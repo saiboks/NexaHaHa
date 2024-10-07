@@ -1,6 +1,5 @@
 import time
-
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.enums import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from youtubesearchpython.__future__ import VideosSearch
@@ -23,88 +22,32 @@ from AnonXMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
-
-import logging
-
-# LOGGER define karo
-logging.basicConfig(level=logging.INFO)
-LOGGER = logging.getLogger(__name__)
+# Initialize Pyrogram Client
+app = Client("my_bot")
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
     if len(message.text.split()) > 1:
-        # Dusre commands ko handle karo jaise help, sudo, etc.
-        if name[0:3] == "inf":
-            m = await message.reply_text("🔎")
-            query = (str(name)).replace("info_", "", 1)
-            query = f"https://www.youtube.com/watch?v={query}"
-            results = VideosSearch(query, limit=1)
-            for result in (await results.next())["result"]:
-                title = result["title"]
-                duration = result["duration"]
-                views = result["viewCount"]["short"]
-                thumbnail = result["thumbnails"][0]["url"].split("?")[0]
-                channellink = result["channel"]["link"]
-                channel = result["channel"]["name"]
-                link = result["link"]
-                published = result["publishedTime"]
-            searched_text = _["start_7"].format(
-                title, duration, views, published, channellink, channel, app.mention
-            )
-            key = InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(text=_["S_B_8"], url=link),
-                        InlineKeyboardButton(text=_["S_B_9"], url=config.SUPPORT_CHAT),
-                    ],
-                ]
-            )
-            await m.delete()
-            await app.send_photo(
-                chat_id=message.chat.id,
-                photo=thumbnail,
-                caption=searched_text,
-                reply_markup=key,
-            )
-            if await is_on_off(2):
-                return await app.send_message(
-                    chat_id=config.LOGGER_ID,
-                    text=f"{message.from_user.mention} ne bot start kiya track information check karne ke liye.\n\n<b>User ID:</b> <code>{message.from_user.id}</code>\n<b>Username:</b> @{message.from_user.username}",
-                )
-        else:
-            out = private_panel(_)
-            await message.reply_photo(
-                photo=photo,  # Profile pic ya default image use karo
-                caption=_["start_2"].format(message.from_user.mention, app.mention),
-            )
-
-            # Dusri caption bhejo start_3 ke saath reply_markup
-            await message.reply_text(
-                text=_["start_3"].format(app.mention),
-                reply_markup=InlineKeyboardMarkup(out),
-            )
-
-            if await is_on_off(2):
-                return await app.send_message(
-                    chat_id=config.LOGGER_ID,
-                    text=f"{message.from_user.mention} ne bot start kiya.\n\n<b>User ID:</b> <code>{message.from_user.id}</code>\n<b>Username:</b> @{message.from_user.username}",
-                )
+        # Handle other commands like help, sudo, etc.
+        pass
     else:
         try:
+            # Fetch profile photo of the user
             profile_photos = await client.get_profile_photos(message.from_user.id)
             if profile_photos.total_count > 0:
-                # Pehla profile photo use karo
+                # Use the first profile photo
                 photo = profile_photos.photos[0][0].file_id
             else:
-                # Agar profile pic nahi hai toh default image use karo
+                # Default image if no profile picture
                 photo = config.START_IMG_URL
         except Exception as e:
-            LOGGER.error(f"Profile photos lene mein error: {e}")
-            # Agar error aaye toh default image use karo
+            # Log the error and use default image in case of any error
+            print(f"Failed to get profile photos: {e}")
             photo = config.START_IMG_URL
 
+        # Create the panel for the start message
         out = private_panel(_)
         await message.reply_photo(
             photo=photo,
@@ -116,13 +59,16 @@ async def start_pm(client, message: Message, _):
             reply_markup=InlineKeyboardMarkup(out),
         )
 
+        # Check if logging is enabled
         if await is_on_off(2):
             await client.send_message(
                 chat_id=config.LOGGER_ID,
-                text=f"{message.from_user.mention} ne bot start kiya.\n\n<b>User ID:</b> <code>{message.from_user.id}</code>\n<b>Username:</b> @{message.from_user.username}",
+                text=f"{message.from_user.mention} just started the bot.\n\n"
+                     f"<b>User ID:</b> <code>{message.from_user.id}</code>\n"
+                     f"<b>Username:</b> @{message.from_user.username}",
             )
 
-
+# Start bot in group chat
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
@@ -135,7 +81,7 @@ async def start_gp(client, message: Message, _):
     )
     return await add_served_chat(message.chat.id)
 
-
+# Handle new chat members
 @app.on_message(filters.new_chat_members, group=-1)
 async def welcome(client, message: Message):
     for member in message.new_chat_members:
