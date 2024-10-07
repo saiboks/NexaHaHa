@@ -30,7 +30,7 @@ async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
 
     # Fetch user profile photos
-    profile_photos = await client.get_profile_photos(message.from_user.id)
+    profile_photos = await app.get_profile_photos(message.from_user.id)
     if profile_photos.total_count > 0:
         # User has a profile pic, use it
         photo = profile_photos.photos[0][-1].file_id  # Get the highest resolution photo
