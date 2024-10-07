@@ -81,40 +81,35 @@ async def start_pm(client, message: Message, _):
                     chat_id=config.LOGGER_ID,
                     text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
                 )
-            if message.chat.photo:
 
-                userss_photo = await app.download_media(
-                    message.chat.photo.big_file_id,
-                )
-            else:
+            try:
+                if message.chat.photo:
+                    userss_photo = await app.download_media(
+                        message.chat.photo.big_file_id,
+                    )
+                else:
+                    userss_photo = "assets/nodp.png"
+            except AttributeError:
                 userss_photo = "assets/nodp.png"
-            if userss_photo:
-                chat_photo = userss_photo
-            chat_photo = userss_photo if userss_photo else START_IMG_URL
 
-        except AttributeError:
-            chat_photo = "assets/nodp.png"
-        await vips.delete()
-        await message.reply_photo(
-            photo=chat_photo,
-            caption=_["start_2"].format(message.from_user.mention, app.mention),
+            chat_photo = userss_photo if userss_photo else config.START_IMG_URL
 
+            await message.reply_photo(
+                photo=chat_photo,
+                caption=_["start_2"].format(message.from_user.mention, app.mention),
+            )  
 
-        )  
+            # now start_3 send caption with reply_markup
+            await message.reply_text(
+                text=_["start_3"].format(app.mention),  # second caption (start_3)
+                reply_markup=InlineKeyboardMarkup(out),  # with reply_markup
+            )  
 
-             # now start_3 send caption with reply_markup
-        await message.reply_text(
-            text=_["start_3"].format(app.mention),  # second caption (start_3)
-            reply_markup=InlineKeyboardMarkup(out),  # with reply_markup
-
-
-        )  
-
-        if await is_on_off(2):
-            return await app.send_message(
-                chat_id=config.LOGGER_ID,
-                text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
-            )
+            if await is_on_off(2):
+                return await app.send_message(
+                    chat_id=config.LOGGER_ID,
+                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                )
 
     @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
