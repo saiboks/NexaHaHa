@@ -100,4 +100,10 @@ async def mute_user(client, message):
     else:
         await message.reply_text("I don't have the permission to mute users.")
 
-client.run()  # Start the bot
+# Start the client using asyncio (without client.run())
+async def main():
+    await client.start()
+    await client.idle()
+
+if __name__ == "__main__":
+    asyncio.run(main())
