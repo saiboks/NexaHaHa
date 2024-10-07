@@ -28,32 +28,39 @@ from strings import get_string
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
-
-    # Fetch user profile photos
-    profile_photos = await app.get_profile_photos(message.from_user.id)
-    if profile_photos.total_count > 0:
-        # User has a profile pic, use it
-        photo = profile_photos.photos[0][-1].file_id  # Get the highest resolution photo
-    else:
-        # No profile pic, use default START_IMG_URL
-        photo = config.START_IMG_URL
-
     if len(message.text.split()) > 1:
-        name = message.text.split(None, 1)[1]
-        if name[0:4] == "help":
-            keyboard = help_pannel(_)
-            return await message.reply_photo(
-                photo=photo,  # Use the determined photo (either profile pic or default)
-                caption=_["help_1"].format(config.SUPPORT_CHAT),
-                reply_markup=keyboard,
+        # Handle other commands like help, sudo, etc.
+        pass
+    else:
+        try:
+            profile_photos = await client.get_profile_photos(message.from_user.id)
+            if profile_photos.total_count > 0:
+                # Use the first profile photo
+                photo = profile_photos.photos[0][0].file_id
+            else:
+                # Default image if no profile picture
+                photo = config.START_IMG_URL
+        except Exception as e:
+            LOGGER(__name__).error(f"Failed to get profile photos: {e}")
+            # Use default image in case of any error
+            photo = config.START_IMG_URL
+
+        out = private_panel(_)
+        await message.reply_photo(
+            photo=photo,
+            caption=_["start_2"].format(message.from_user.mention, client.mention),
+        )
+        
+        await message.reply_text(
+            text=_["start_3"].format(client.mention),
+            reply_markup=InlineKeyboardMarkup(out),
+        )
+        
+        if await is_on_off(2):
+            await client.send_message(
+                chat_id=config.LOGGER_ID,
+                text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
             )
-        if name[0:3] == "sud":
-            await sudoers_list(client=client, message=message, _=_)
-            if await is_on_off(2):
-                return await app.send_message(
-                    chat_id=config.LOGGER_ID,
-                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
-                )
             return
         if name[0:3] == "inf":
             m = await message.reply_text("🔎")
