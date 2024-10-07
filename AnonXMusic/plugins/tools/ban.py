@@ -4,7 +4,9 @@ from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import ChatPermissions
 from config import OWNER_ID
 
-@app.on_message(filters.command(["mute", "tmute"], prefixes=["/"]))
+client = Client("my_bot")  # Define your Client instance
+
+@client.on_message(filters.command(["mute", "tmute"], prefixes=["/"]))
 async def mute_user(client, message):
     chat_id = message.chat.id
     target_user = None
@@ -97,3 +99,5 @@ async def mute_user(client, message):
             await message.reply_text("You cannot mute an admin or owner.")
     else:
         await message.reply_text("I don't have the permission to mute users.")
+
+client.run()  # Start the bot
