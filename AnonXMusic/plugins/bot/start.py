@@ -29,39 +29,7 @@ from strings import get_string
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
     if len(message.text.split()) > 1:
-        # Handle other commands like help, sudo, etc.
-        pass
-    else:
-        try:
-            profile_photos = await client.get_profile_photos(message.from_user.id)
-            if profile_photos.total_count > 0:
-                # Use the first profile photo
-                photo = profile_photos.photos[0][0].file_id
-            else:
-                # Default image if no profile picture
-                photo = config.START_IMG_URL
-        except Exception as e:
-            LOGGER(__name__).error(f"Failed to get profile photos: {e}")
-            # Use default image in case of any error
-            photo = config.START_IMG_URL
-
-        out = private_panel(_)
-        await message.reply_photo(
-            photo=photo,
-            caption=_["start_2"].format(message.from_user.mention, client.mention),
-        )
-        
-        await message.reply_text(
-            text=_["start_3"].format(client.mention),
-            reply_markup=InlineKeyboardMarkup(out),
-        )
-        
-        if await is_on_off(2):
-            await client.send_message(
-                chat_id=config.LOGGER_ID,
-                text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
-            )
-            return
+        # Dusre commands ko handle karo jaise help, sudo, etc.
         if name[0:3] == "inf":
             m = await message.reply_text("🔎")
             query = (str(name)).replace("info_", "", 1)
@@ -97,25 +65,55 @@ async def start_pm(client, message: Message, _):
             if await is_on_off(2):
                 return await app.send_message(
                     chat_id=config.LOGGER_ID,
-                    text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                    text=f"{message.from_user.mention} ne bot start kiya track information check karne ke liye.\n\n<b>User ID:</b> <code>{message.from_user.id}</code>\n<b>Username:</b> @{message.from_user.username}",
                 )
-          else:
+        else:
+            out = private_panel(_)
+            await message.reply_photo(
+                photo=photo,  # Profile pic ya default image use karo
+                caption=_["start_2"].format(message.from_user.mention, app.mention),
+            )
+
+            # Dusri caption bhejo start_3 ke saath reply_markup
+            await message.reply_text(
+                text=_["start_3"].format(app.mention),
+                reply_markup=InlineKeyboardMarkup(out),
+            )
+
+            if await is_on_off(2):
+                return await app.send_message(
+                    chat_id=config.LOGGER_ID,
+                    text=f"{message.from_user.mention} ne bot start kiya.\n\n<b>User ID:</b> <code>{message.from_user.id}</code>\n<b>Username:</b> @{message.from_user.username}",
+                )
+    else:
+        try:
+            profile_photos = await client.get_profile_photos(message.from_user.id)
+            if profile_photos.total_count > 0:
+                # Pehla profile photo use karo
+                photo = profile_photos.photos[0][0].file_id
+            else:
+                # Agar profile pic nahi hai toh default image use karo
+                photo = config.START_IMG_URL
+        except Exception as e:
+            LOGGER(__name__).error(f"Profile photos lene mein error: {e}")
+            # Agar error aaye toh default image use karo
+            photo = config.START_IMG_URL
+
         out = private_panel(_)
         await message.reply_photo(
-            photo=photo,  # Use profile pic or default image
-            caption=_["start_2"].format(message.from_user.mention, app.mention),
+            photo=photo,
+            caption=_["start_2"].format(message.from_user.mention, client.mention),
         )
 
-        # now start_3 send caption with reply_markup
         await message.reply_text(
-            text=_["start_3"].format(app.mention),  # second caption (start_3)
-            reply_markup=InlineKeyboardMarkup(out),  # with reply_markup
+            text=_["start_3"].format(client.mention),
+            reply_markup=InlineKeyboardMarkup(out),
         )
 
         if await is_on_off(2):
-            return await app.send_message(
+            await client.send_message(
                 chat_id=config.LOGGER_ID,
-                text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+                text=f"{message.from_user.mention} ne bot start kiya.\n\n<b>User ID:</b> <code>{message.from_user.id}</code>\n<b>Username:</b> @{message.from_user.username}",
             )
 
 
