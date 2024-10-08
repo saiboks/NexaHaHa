@@ -48,7 +48,7 @@ async def mute_user(client, message):
 
     # Check if the target user is the owner
     if target_user.id == OWNER_ID:
-        await message.reply_text("You can't make me mute my owner.")
+        await message.reply_text("You can't make me silence my master.")
         return
 
     if bot_permission:
