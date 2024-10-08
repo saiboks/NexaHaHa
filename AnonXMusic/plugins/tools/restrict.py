@@ -120,23 +120,30 @@ async def unmute_user(client, message):
         return
 
     if bot_permission:
-        # Check if the target user is muted or not
-        member = await client.get_chat_member(chat_id, target_user.id)
-        if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
-            try:
-                # Unmute the user (restore all permissions)
-                await client.restrict_chat_member(
-                    chat_id, 
-                    target_user.id,
-                    permissions=ChatPermissions(can_send_messages=True)
+        # Unmute the user and restore full permissions
+        try:
+            await client.restrict_chat_member(
+                chat_id, 
+                target_user.id,
+                permissions=ChatPermissions(
+                    can_send_messages=True,
+                    can_send_media_messages=True,
+                    can_send_stickers=True,
+                    can_send_animations=True,
+                    can_send_games=True,
+                    can_use_inline_bots=True,
+                    can_add_web_page_previews=True,
+                    can_send_polls=True,
+                    can_change_info=True,
+                    can_invite_users=True,
+                    can_pin_messages=True
                 )
-                group_name = message.chat.title if message.chat.title else "this group"
-                await message.reply_text(
-                    f"{target_user.first_name} has been unmuted successfully by {issuer.first_name} in {group_name}."
-                )
-            except Exception as e:
-                await message.reply_text(f"Failed to unmute the user: {str(e)}")
-        else:
-            await message.reply_text("You cannot unmute an admin or owner.")
+            )
+            group_name = message.chat.title if message.chat.title else "this group"
+            await message.reply_text(
+                f"{target_user.first_name} has been unmuted successfully by {issuer.first_name} in {group_name}."
+            )
+        except Exception as e:
+            await message.reply_text(f"Failed to unmute the user: {str(e)}")
     else:
         await message.reply_text("I don't have the permission to unmute users.")
