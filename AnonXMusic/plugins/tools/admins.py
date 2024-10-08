@@ -31,7 +31,7 @@ async def promoteFunc(client, message):
 
         if not user:
             command_name = message.command[0]  # Get the command name
-            await message.reply(f"<u><b>User not found.</u></b>\nThe command /{command_name} must be used specifying user <b>username/id/mention or replying</b> to one of their messages.")
+            await message.reply(f"<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\ nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command_name} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
@@ -101,19 +101,17 @@ async def promoteFunc(client, message):
 
 
 # Demote function
-@app.on_message(filters.command(["demote"],  prefixes=["/", "!", ".",","]))
+@app.on_message(filters.command(["demote"], "."))
 async def demoteFunc(client, message):
     try:
-        user = None
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
-        elif len(message.command) > 1:
+        elif not message.reply_to_message and len(message.command) > 1:
             user = message.text.split(None, 1)[1]
             if not user.startswith("@"):  # Ensure the username is in correct format
                 user = "@" + user
-
-        if not user:
-            await message.reply(f"<u><b>User not found.</u></b>\nThe command /{command_name} must be used specifying user <b>username/id/mention or replying</b> to one of their messages.")
+        else:
+            await message.reply("<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command_name} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
