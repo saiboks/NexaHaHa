@@ -100,3 +100,45 @@ async def handle_start(client, message):
             f"Permission settings for user ID {target_user_id}. Adjust them below:",
             reply_markup=permissions_keyboard
         )
+
+
+# Toggle specific permissions when buttons are clicked
+@app.on_callback_query(filters.regex(r"toggle_(\w+)_(\d+)"))
+async def toggle_permission(client, callback_query):
+    permission_type = callback_query.data.split("_")[1]
+    target_user_id = int(callback_query.data.split("_")[2])
+    chat_id = callback_query.message.chat.id
+
+    # Fetch current permissions of the user
+    member = await client.get_chat_member(chat_id, target_user_id)
+    permissions = member.permissions
+
+    # Logic to toggle each permission type
+    if permission_type == "text":
+        new_permission = not permissions.can_send_messages
+        await client.restrict_chat_member(
+            chat_id, target_user_id,
+            permissions=ChatPermissions(can_send_messages=new_permission)
+        )
+        await callback_query.answer(f"Text messages {'enabled' if new_permission else 'disabled'}.")
+    
+    elif permission_type == "photo":
+        new_permission = not permissions.can_send_media_messages
+        await client.restrict_chat_member(
+            chat_id, target_user_id,
+            permissions=ChatPermissions(can_send_media_messages=new_permission)
+        )
+        await callback_query.answer(f"Photos {'enabled' if new_permission else 'disabled'}.")
+    
+    # Similarly, handle other types (video, audio, etc.)
+    # Add elif blocks for "video", "sticker", "audio", etc.
+
+    await callback_query.answer("Permission updated.")
+
+
+# Save the permission changes
+@app.on_callback_query(filters.regex(r"save_permissions_(\d+)"))
+async def save_permissions(client, callback_query):
+    target_user_id = int(callback_query.data.split("_")[1])
+    await callback_query.answer(f"Permissions for user {target_user_id} saved successfully.")
+    await callback_query.message.delete()  # Optionally delete the permission setting message
