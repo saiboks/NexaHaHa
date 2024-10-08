@@ -86,15 +86,17 @@ async def mute_user(client, message):
 async def handle_start(client, message):
     if message.text.startswith("/start permissions_"):
         target_user_id = int(message.text.split("_")[1])
-
-        # Create a keyboard for permission options like in your screenshot
+        
+        # Debugging message to confirm bot got the correct start command
+        await message.reply_text(f"Received permission start for user {target_user_id}")
+        
+        # Display the permission options
         permissions_keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("Text messages", callback_data=f"toggle_text_{target_user_id}")],
             [InlineKeyboardButton("Photo", callback_data=f"toggle_photo_{target_user_id}")],
             [InlineKeyboardButton("Video", callback_data=f"toggle_video_{target_user_id}")],
             [InlineKeyboardButton("Sticker/GIF", callback_data=f"toggle_sticker_{target_user_id}")],
             [InlineKeyboardButton("Audio", callback_data=f"toggle_audio_{target_user_id}")],
-            [InlineKeyboardButton("Voice", callback_data=f"toggle_voice_{target_user_id}")],
             [InlineKeyboardButton("Save", callback_data=f"save_permissions_{target_user_id}")]
         ])
 
