@@ -3,8 +3,9 @@ from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton
 from config import OWNER_ID
-from AnonXMusic import app  # Make sure to import app properly
+from AnonXMusic import app  # Ensure app is imported properly
 
+# Mute user command in group
 @app.on_message(filters.command(["mute"], prefixes=["/"]))
 async def mute_user(client, message):
     chat_id = message.chat.id
