@@ -97,5 +97,3 @@ async def handle_callbacks(client, callback_query):
         target_user_id = int(data.split("_")[1])
         await callback_query.answer(f"Permissions saved for user ID {target_user_id}")
 
-# Run the bot
-app.run()
