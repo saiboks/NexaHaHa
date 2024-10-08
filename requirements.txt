@@ -13,7 +13,7 @@ psutil
 py-tgcalls==0.9.7
 pyfiglet
 pykeyboard
-pyrofork
+pyrogram
 python-dotenv
 pyyaml
 requests
