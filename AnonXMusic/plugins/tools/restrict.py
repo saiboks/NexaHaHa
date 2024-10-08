@@ -1,7 +1,8 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from pyrogram.enums import ChatMemberStatus, ChatPermissions
-from config import OWNER_ID  # Make sure you have defined OWNER_ID in your config
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions  # Corrected import
+from pyrogram.enums import ChatMemberStatus
+from pyrogram.types import Message
+from config import OWNER_ID
 
 # Initialize your bot client
 app = Client("my_bot")
