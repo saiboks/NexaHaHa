@@ -28,7 +28,8 @@ async def promoteFunc(client, message):
             if not user.startswith("@"):  # Ensure the username is in correct format
                 user = "@" + user
         else:
-            await message.reply("Invalid command usage.")
+            command_name = message.command[0]  # Get the command name
+            await message.reply(f"User not found.\nThe command `{command_name}` must be used specifying user username/id/mention or replying to one of their messages.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
