@@ -21,15 +21,17 @@ async def is_administrator(user_id: int, message, client):
 @app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".",","]))
 async def promoteFunc(client, message):
     try:
+        user = None
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
         elif len(message.command) > 1:
             user = message.text.split(None, 1)[1]
             if not user.startswith("@"):  # Ensure the username is in correct format
                 user = "@" + user
-        else:
+
+        if not user:
             command_name = message.command[0]  # Get the command name
-            await message.reply(f"User not found.\nThe command `{command_name}` must be used specifying user username/id/mention or replying to one of their messages.")
+            await message.reply(f"<u><b>User not found.</u></b>\nThe command /{command_name} must be used specifying user <b>username/id/mention or replying</b> to one of their messages.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
@@ -102,14 +104,16 @@ async def promoteFunc(client, message):
 @app.on_message(filters.command(["demote"],  prefixes=["/", "!", ".",","]))
 async def demoteFunc(client, message):
     try:
+        user = None
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
-        elif not message.reply_to_message and len(message.command) > 1:
+        elif len(message.command) > 1:
             user = message.text.split(None, 1)[1]
             if not user.startswith("@"):  # Ensure the username is in correct format
                 user = "@" + user
-        else:
-            await message.reply("Invalid command usage.")
+
+        if not user:
+            await message.reply(f"<u><b>User not found.</u></b>\nThe command /{command_name} must be used specifying user <b>username/id/mention or replying</b> to one of their messages.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
