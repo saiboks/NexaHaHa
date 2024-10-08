@@ -3,6 +3,7 @@ from pyrogram import Client, filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import ChatPermissions
 from config import OWNER_ID
+from AnonXMusic import app
 
 @app.on_message(filters.command(["mute"], prefixes=["/"]))
 async def mute_user(client, message):
