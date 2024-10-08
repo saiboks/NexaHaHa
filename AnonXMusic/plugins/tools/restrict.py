@@ -63,10 +63,11 @@ async def mute_user(client, message):
                     permissions=ChatPermissions(can_send_messages=False)
                 )
 
-                # Send a button to open permissions in PM
+                # Send a deep link button to open bot's PM with permission settings
+                bot_username = (await client.get_me()).username
                 mute_message = f"{target_user.first_name} has been muted successfully by {issuer.first_name}."
                 button = InlineKeyboardMarkup(
-                    [[InlineKeyboardButton("Permissions", callback_data=f"permissions_{target_user.id}")]]
+                    [[InlineKeyboardButton("Permissions", url=f"t.me/{bot_username}?start=permissions_{target_user.id}")]]
                 )
 
                 await message.reply_text(mute_message, reply_markup=button)
@@ -79,32 +80,27 @@ async def mute_user(client, message):
         await message.reply_text("I don't have the permission to mute users.")
 
 
-# Handle the callback to show permissions in PM
-@app.on_callback_query(filters.regex(r"permissions_(\d+)"))
-async def permission_settings(client, callback_query):
-    target_user_id = int(callback_query.data.split("_")[1])
-    
-    # Create a keyboard for permission options like in your screenshot
-    permissions_keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Text messages", callback_data=f"toggle_text_{target_user_id}")],
-        [InlineKeyboardButton("Photo", callback_data=f"toggle_photo_{target_user_id}")],
-        [InlineKeyboardButton("Video", callback_data=f"toggle_video_{target_user_id}")],
-        [InlineKeyboardButton("Sticker/GIF", callback_data=f"toggle_sticker_{target_user_id}")],
-        [InlineKeyboardButton("Audio", callback_data=f"toggle_audio_{target_user_id}")],
-        [InlineKeyboardButton("Voice", callback_data=f"toggle_voice_{target_user_id}")],
-        [InlineKeyboardButton("Save", callback_data=f"save_permissions_{target_user_id}")]
-    ])
+# Handle the deep link /start=permissions_<user_id> to show permissions in PM
+@app.on_message(filters.command("start") & filters.private)
+async def handle_start(client, message):
+    if message.text.startswith("/start permissions_"):
+        target_user_id = int(message.text.split("_")[1])
 
-    try:
-        # Send the permissions setting to the user's PM
-        await client.send_message(
-            callback_query.from_user.id,  # Sending to the user's private chat
+        # Create a keyboard for permission options like in your screenshot
+        permissions_keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("Text messages", callback_data=f"toggle_text_{target_user_id}")],
+            [InlineKeyboardButton("Photo", callback_data=f"toggle_photo_{target_user_id}")],
+            [InlineKeyboardButton("Video", callback_data=f"toggle_video_{target_user_id}")],
+            [InlineKeyboardButton("Sticker/GIF", callback_data=f"toggle_sticker_{target_user_id}")],
+            [InlineKeyboardButton("Audio", callback_data=f"toggle_audio_{target_user_id}")],
+            [InlineKeyboardButton("Voice", callback_data=f"toggle_voice_{target_user_id}")],
+            [InlineKeyboardButton("Save", callback_data=f"save_permissions_{target_user_id}")]
+        ])
+
+        await message.reply_text(
             f"Permission settings for user ID {target_user_id}. Adjust them below:",
             reply_markup=permissions_keyboard
         )
-        await callback_query.answer("Permissions settings sent to your PM.")
-    except Exception as e:
-        await callback_query.answer(f"Failed to send PM: {str(e)}", show_alert=True)
 
 
 # Toggle specific permissions when buttons are clicked
