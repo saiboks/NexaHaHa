@@ -114,11 +114,7 @@ async def unmute_user(client, message):
     bot = await client.get_chat_member(chat_id, client.me.id)
     bot_permission = bot.privileges.can_restrict_members
 
-    # Check if the target user is the owner
-    if target_user.id == OWNER_ID:
-        await message.reply_text("You can't unmute the owner of this bot.")
-        return
-
+    # Remove the check for owner ID to allow unmuting
     if bot_permission:
         # Unmute the user and restore full permissions
         try:
