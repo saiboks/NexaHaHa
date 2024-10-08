@@ -51,6 +51,12 @@ async def promoteFunc(client, message):
         await message.reply("I don't have the permission to promote members.")
         return
 
+    # Check if the person issuing the command has promotion rights
+    user_member = await client.get_chat_member(message.chat.id, message.from_user.id)
+    if not user_member.privileges or not user_member.privileges.can_promote_members:
+        await message.reply("You don't have permission to promote members.")
+        return
+
     # Prevent self-promotion unless user is the owner
     if int(user_data.id) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
         await message.reply("You cannot promote yourself unless you're the owner.")
