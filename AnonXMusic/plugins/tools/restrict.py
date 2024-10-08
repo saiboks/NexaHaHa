@@ -21,7 +21,6 @@ async def mute_user(client, message):
     # If command is a reply to a message, mute the replied user
     if message.reply_to_message:
         target_user = message.reply_to_message.from_user
-    # If user ID or username is provided in the command
     elif len(message.command) > 1:
         user_input = message.command[1]
 
@@ -32,7 +31,6 @@ async def mute_user(client, message):
             except Exception as e:
                 await message.reply_text(f"User not found: {str(e)}")
                 return
-        # If input is a username, fetch the user by username
         else:
             try:
                 target_user = await client.get_users(user_input)
@@ -57,7 +55,6 @@ async def mute_user(client, message):
         member = await client.get_chat_member(chat_id, target_user.id)
         if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
             try:
-                # Mute the user (restrict sending messages)
                 await client.restrict_chat_member(
                     chat_id, 
                     target_user.id,
@@ -70,6 +67,8 @@ async def mute_user(client, message):
                 button = InlineKeyboardMarkup(
                     [[InlineKeyboardButton("Permissions", url=f"t.me/{bot_username}?start=permissions_{target_user.id}")]]
                 )
+
+                print(f"Generated deep link: t.me/{bot_username}?start=permissions_{target_user.id}")
 
                 await message.reply_text(mute_message, reply_markup=button)
 
@@ -86,17 +85,14 @@ async def mute_user(client, message):
 async def handle_start(client, message):
     if message.text.startswith("/start permissions_"):
         target_user_id = int(message.text.split("_")[1])
-        
+
         # Debugging message to confirm bot got the correct start command
         await message.reply_text(f"Received permission start for user {target_user_id}")
-        
-        # Display the permission options
+
         permissions_keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("Text messages", callback_data=f"toggle_text_{target_user_id}")],
             [InlineKeyboardButton("Photo", callback_data=f"toggle_photo_{target_user_id}")],
             [InlineKeyboardButton("Video", callback_data=f"toggle_video_{target_user_id}")],
-            [InlineKeyboardButton("Sticker/GIF", callback_data=f"toggle_sticker_{target_user_id}")],
-            [InlineKeyboardButton("Audio", callback_data=f"toggle_audio_{target_user_id}")],
             [InlineKeyboardButton("Save", callback_data=f"save_permissions_{target_user_id}")]
         ])
 
@@ -104,45 +100,3 @@ async def handle_start(client, message):
             f"Permission settings for user ID {target_user_id}. Adjust them below:",
             reply_markup=permissions_keyboard
         )
-
-
-# Toggle specific permissions when buttons are clicked
-@app.on_callback_query(filters.regex(r"toggle_(\w+)_(\d+)"))
-async def toggle_permission(client, callback_query):
-    permission_type = callback_query.data.split("_")[1]
-    target_user_id = int(callback_query.data.split("_")[2])
-    chat_id = callback_query.message.chat.id
-
-    # Fetch current permissions of the user
-    member = await client.get_chat_member(chat_id, target_user_id)
-    permissions = member.permissions
-
-    # Logic to toggle each permission type
-    if permission_type == "text":
-        new_permission = not permissions.can_send_messages
-        await client.restrict_chat_member(
-            chat_id, target_user_id,
-            permissions=ChatPermissions(can_send_messages=new_permission)
-        )
-        await callback_query.answer(f"Text messages {'enabled' if new_permission else 'disabled'}.")
-    
-    elif permission_type == "photo":
-        new_permission = not permissions.can_send_media_messages
-        await client.restrict_chat_member(
-            chat_id, target_user_id,
-            permissions=ChatPermissions(can_send_media_messages=new_permission)
-        )
-        await callback_query.answer(f"Photos {'enabled' if new_permission else 'disabled'}.")
-    
-    # Similarly, handle other types (video, audio, etc.)
-    # Add elif blocks for "video", "sticker", "audio", etc.
-
-    await callback_query.answer("Permission updated.")
-
-
-# Save the permission changes
-@app.on_callback_query(filters.regex(r"save_permissions_(\d+)"))
-async def save_permissions(client, callback_query):
-    target_user_id = int(callback_query.data.split("_")[1])
-    await callback_query.answer(f"Permissions for user {target_user_id} saved successfully.")
-    await callback_query.message.delete()  # Optionally delete the permission setting message
