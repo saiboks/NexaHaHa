@@ -101,7 +101,7 @@ async def promoteFunc(client, message):
 
 
 # Demote function
-@app.on_message(filters.command(["demote"], "."))
+@app.on_message(filters.command(["demote"], prefixes=["/", "!", ".",","]))
 async def demoteFunc(client, message):
     try:
         if message.reply_to_message:
