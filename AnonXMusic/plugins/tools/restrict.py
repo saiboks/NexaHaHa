@@ -1,9 +1,9 @@
 import asyncio
-from pyrogram import Client, filters
+from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import ChatPermissions, InlineKeyboardMarkup, InlineKeyboardButton
 from config import OWNER_ID
-from AnonXMusic import app
+from AnonXMusic import app  # Make sure to import app properly
 
 @app.on_message(filters.command(["mute"], prefixes=["/"]))
 async def mute_user(client, message):
@@ -95,12 +95,16 @@ async def permission_settings(client, callback_query):
         [InlineKeyboardButton("Save", callback_data=f"save_permissions_{target_user_id}")]
     ])
 
-    # Send the permissions setting to the user's PM
-    await client.send_message(
-        callback_query.from_user.id,
-        f"Permission settings for user ID {target_user_id}. Adjust them below:",
-        reply_markup=permissions_keyboard
-    )
+    try:
+        # Send the permissions setting to the user's PM
+        await client.send_message(
+            callback_query.from_user.id,  # Sending to the user's private chat
+            f"Permission settings for user ID {target_user_id}. Adjust them below:",
+            reply_markup=permissions_keyboard
+        )
+        await callback_query.answer("Permissions settings sent to your PM.")
+    except Exception as e:
+        await callback_query.answer(f"Failed to send PM: {str(e)}", show_alert=True)
 
 
 # Toggle specific permissions when buttons are clicked
