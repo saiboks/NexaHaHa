@@ -127,7 +127,7 @@ async def unmute_user(client, message):
                 target_user.id,
                 permissions=ChatPermissions(
                     can_send_messages=True,
-                    can_send_media_messages=True,
+                    can_send_media_messages=True,  # This covers media, stickers, GIFs
                     can_send_polls=True,
                     can_add_web_page_previews=True,
                     can_change_info=True,
