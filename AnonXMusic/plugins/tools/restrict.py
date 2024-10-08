@@ -1,3 +1,4 @@
+import config
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions, CallbackQuery
 from pyrogram.enums import ChatMemberStatus
