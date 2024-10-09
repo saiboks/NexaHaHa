@@ -21,6 +21,12 @@ async def is_administrator(user_id: int, message, client):
 @app.on_message(filters.command(["promote", "fullpromote"], "."))
 async def promoteFunc(client, message):
     try:
+        # Check if the person sending the command is an admin
+        is_admin = await is_administrator(message.from_user.id, message, client)
+        if not is_admin:
+            await message.reply("You need to be an admin to promote others.")
+            return
+
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
         elif len(message.command) > 1:
