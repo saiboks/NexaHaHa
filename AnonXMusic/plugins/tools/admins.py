@@ -31,7 +31,7 @@ async def promoteFunc(client, message):
 
         if not user:
             command_name = message.command[0]  # Get the command name
-            await message.reply(f"<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\ nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command_name} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs.")
+            await message.reply(f"<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command_name} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
@@ -61,8 +61,9 @@ async def promoteFunc(client, message):
         return
 
     # Prevent self-promotion unless user is the owner
-    if int(user_data.id) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
-        await message.reply("You cannot promote yourself unless you're the owner.")
+if int(user_data.id) == int(message.from_user.id):
+    if message.from_user.id != OWNER_ID:
+        await message.reply("Only the bot owner can promote themselves.")
         return
 
     try:
