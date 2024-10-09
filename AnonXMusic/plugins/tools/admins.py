@@ -51,13 +51,24 @@ async def promoteFunc(client, message):
         await message.reply("I don't have the permission to promote members.")
         return
 
-    # Prevent self-promotion unless user is the owner
+    # Check if the owner is promoting themselves
     if int(user_data.id) == int(message.from_user.id):
-        if message.from_user.id != OWNER_ID:
+        if message.from_user.id == OWNER_ID:
+            # Owner can promote themselves without any restrictions
+            pass
+        else:
             await message.reply("You cannot promote yourself unless you're the owner.")
             return
 
-    # Check if the person sending the command is an admin (except for owner)
+    # For promoting others, check if the promoter (owner) is an admin
+    if int(message.from_user.id) == OWNER_ID:
+        # Owner is allowed to promote others only if they are an admin in the group
+        is_admin = await is_administrator(message.from_user.id, message, client)
+        if not is_admin:
+            await message.reply("As the owner, you need to be an admin to promote others.")
+            return
+
+    # Check if non-owners are trying to promote
     if message.from_user.id != OWNER_ID:
         is_admin = await is_administrator(message.from_user.id, message, client)
         if not is_admin:
