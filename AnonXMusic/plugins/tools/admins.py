@@ -1,3 +1,21 @@
+from config import OWNER_ID
+from pyrogram import filters, Client
+from AnonXMusic import app
+from pyrogram.types import ChatPrivileges
+from pyrogram.enums import ChatMembersFilter
+# Check if user has admin rights
+async def is_administrator(user_id: int, message, client):
+    admin = False
+    administrators = []
+    async for m in app.get_chat_members(message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS):
+        administrators.append(m)
+    for user in administrators:
+        if user.user.id == user_id:
+            admin = True
+            break
+    return admin
+
+
 @app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".",","]))
 async def promoteFunc(client, message):
     try:
