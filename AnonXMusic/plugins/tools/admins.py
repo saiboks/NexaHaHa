@@ -61,10 +61,10 @@ async def promoteFunc(client, message):
         return
 
     # Prevent self-promotion unless user is the owner
-if int(user_data.id) == int(message.from_user.id):
-    if message.from_user.id != OWNER_ID:
-        await message.reply("Only the bot owner can promote themselves.")
-        return
+    if int(user_data.id) == int(message.from_user.id):
+        if message.from_user.id != OWNER_ID:
+            await message.reply("Only the bot owner can promote themselves.")
+            return
 
     try:
         if message.command[0] == "fullpromote":
