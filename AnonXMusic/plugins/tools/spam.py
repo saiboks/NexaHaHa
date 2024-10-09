@@ -25,7 +25,7 @@ async def spam(client, message):
         # Split the command text into components
         args = message.text.split()
         if len(args) < 3:
-            await message.reply("Usage: .spam {reason} {number_of_messages}")
+            await message.reply("<b>ᴜsᴀɢᴇ ➠</b> .sᴘᴀᴍ <ᴍᴇssᴀɢᴇs> <ɴᴜᴍʙᴇʀ ᴏғ ᴍᴇssᴀɢᴇs>")
             return
 
         # Extract the number of messages from the last argument
