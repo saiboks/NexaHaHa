@@ -71,14 +71,14 @@ async def promoteFunc(client, message):
             await message.chat.promote_member(
                 user_id=user_data.id,
                 privileges=ChatPrivileges(
-                    can_change_info=bot_privileges.can_change_info,
-                    can_invite_users=bot_privileges.can_invite_users,
-                    can_delete_messages=bot_privileges.can_delete_messages,
-                    can_restrict_members=bot_privileges.can_restrict_members,
-                    can_pin_messages=bot_privileges.can_pin_messages,
-                    can_promote_members=bot_privileges.can_promote_members,
-                    can_manage_chat=bot_privileges.can_manage_chat,
-                    can_manage_video_chats=bot_privileges.can_manage_video_chats,
+                    can_change_info=True,
+                    can_invite_users=True,
+                    can_delete_messages=True,
+                    can_restrict_members=True,
+                    can_pin_messages=True,
+                    can_promote_members=True,
+                    can_manage_chat=True,
+                    can_manage_video_chats=True,
                 ),
             )
             await message.reply(f"</b>⬤ ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠</b> {group_name}\n\n<b>● ᴘʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
@@ -87,13 +87,13 @@ async def promoteFunc(client, message):
                 user_id=user_data.id,
                 privileges=ChatPrivileges(
                     can_change_info=False,
-                    can_invite_users=bot_privileges.can_invite_users,
-                    can_delete_messages=bot_privileges.can_delete_messages,
+                    can_invite_users=True,
+                    can_delete_messages=True,
                     can_restrict_members=False,
-                    can_pin_messages=bot_privileges.can_pin_messages,
+                    can_pin_messages=True,
                     can_promote_members=False,
-                    can_manage_chat=bot_privileges.can_manage_chat,
-                    can_manage_video_chats=bot_privileges.can_manage_video_chats,
+                    can_manage_chat=True,
+                    can_manage_video_chats=True,
                 ),
             )
             await message.reply(f"<b>⬤ ᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠</b> {group_name}\n\n<b>● ᴩʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
