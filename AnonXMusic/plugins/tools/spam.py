@@ -1,21 +1,38 @@
 from AnonXMusic import app
 from pyrogram import Client, filters
+from pyrogram.enums import ChatMembersFilter
 import asyncio
+
+# Function to check if the user is an admin
+async def is_administrator(user_id: int, chat_id: int, client: Client):
+    administrators = []
+    async for m in app.get_chat_members(chat_id, filter=ChatMembersFilter.ADMINISTRATORS):
+        administrators.append(m)
+    for admin in administrators:
+        if admin.user.id == user_id:
+            return True
+    return False
 
 @app.on_message(filters.command(["spam"], prefixes=[".", "/"]) & filters.group)
 async def spam(client, message):
     try:
+        # Check if the user is an admin
+        is_admin = await is_administrator(message.from_user.id, message.chat.id, client)
+        if not is_admin:
+            await message.reply("Only admins can use the spam command.")
+            return
+
         # Split the command text into components
         args = message.text.split()
         if len(args) < 3:
-            await message.edit_text("Usage: .spam {reason} {number_of_messages}")
+            await message.reply("Usage: .spam {reason} {number_of_messages}")
             return
 
         # Extract the number of messages from the last argument
         try:
             number_of_messages = int(args[-1])
         except ValueError:
-            await message.edit_text("Please enter a valid number of messages.")
+            await message.reply("Please enter a valid number of messages.")
             return
 
         # Join the remaining arguments to form the reason
@@ -23,7 +40,7 @@ async def spam(client, message):
 
         # Validate number of messages
         if number_of_messages <= 0:
-            await message.edit_text("Number of messages must be greater than 0.")
+            await message.reply("Number of messages must be greater than 0.")
             return
 
         # Delete the original command message
@@ -35,4 +52,4 @@ async def spam(client, message):
             await asyncio.sleep(2)  # Sleep for 2 seconds asynchronously
 
     except Exception as e:
-        await message.edit_text(f"An error occurred: {str(e)}")
+        await message.reply(f"An error occurred: {str(e)}")
