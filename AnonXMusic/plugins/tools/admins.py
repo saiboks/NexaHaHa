@@ -61,7 +61,7 @@ async def promoteFunc(client, message):
         return
 
     # Allow only the bot's owner to self-promote
-    if int(user_data.id) == int(message.from_user.id):
+        if int(user_data.id) == int(message.from_user.id):
     await message.reply("You cannot promote yourself.")
     return
 
