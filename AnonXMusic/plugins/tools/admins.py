@@ -3,6 +3,7 @@ from pyrogram import filters, Client
 from AnonXMusic import app
 from pyrogram.types import ChatPrivileges
 from pyrogram.enums import ChatMembersFilter
+
 # Check if user has admin rights
 async def is_administrator(user_id: int, message, client):
     admin = False
@@ -16,7 +17,8 @@ async def is_administrator(user_id: int, message, client):
     return admin
 
 
-@app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".",","]))
+# Promote function
+@app.on_message(filters.command(["promote", "fullpromote"], "."))
 async def promoteFunc(client, message):
     try:
         if message.reply_to_message:
@@ -47,12 +49,6 @@ async def promoteFunc(client, message):
 
     if not bot_privileges or not bot_privileges.can_promote_members:
         await message.reply("I don't have the permission to promote members.")
-        return
-
-    # Check if the person issuing the command has promotion rights
-    user_member = await client.get_chat_member(message.chat.id, message.from_user.id)
-    if not user_member.privileges or not user_member.privileges.can_promote_members:
-        await message.reply("You don't have permission to promote members.")
         return
 
     # Prevent self-promotion unless user is the owner
