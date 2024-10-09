@@ -88,7 +88,7 @@ async def promoteFunc(client, message):
             )
             await message.reply(f"<b>⬤ ᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠</b> {group_name}\n\n<b>● ᴩʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
     except Exception as err:
-        await message.reply(f"An error occurred: {err}")`
+        await message.reply(f"An error occurred: {err}")
 
 
 # Demote function
