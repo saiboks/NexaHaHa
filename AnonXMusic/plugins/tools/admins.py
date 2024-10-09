@@ -18,7 +18,7 @@ async def is_administrator(user_id: int, message, client):
 
 
 # Promote function
-@app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".",","]))
+@app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".", ","]))
 async def promoteFunc(client, message):
     try:
         user = None
@@ -60,7 +60,7 @@ async def promoteFunc(client, message):
         await message.reply("You don't have permission to promote members.")
         return
 
-    # Prevent self-promotion unless user is the owner
+    # Allow only the bot's owner to self-promote
     if int(user_data.id) == int(message.from_user.id):
         if message.from_user.id != OWNER_ID:
             await message.reply("Only the bot owner can promote themselves.")
