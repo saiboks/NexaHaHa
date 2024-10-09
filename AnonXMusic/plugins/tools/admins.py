@@ -25,11 +25,10 @@ async def promoteFunc(client, message):
             user = message.reply_to_message.from_user.id
         elif len(message.command) > 1:
             user = message.text.split(None, 1)[1]
+            if not user.startswith("@"):  # Ensure the username is in correct format
+                user = "@" + user
         else:
-            await message.reply(
-                f"<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</b></u>\n"
-                f"ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{message.command[0]} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ</b> ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
-            )
+            await message.reply("Invalid command usage.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
