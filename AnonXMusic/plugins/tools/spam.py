@@ -1,3 +1,4 @@
+from AnonXMusic import app
 from pyrogram import Client, filters
 import asyncio
 
