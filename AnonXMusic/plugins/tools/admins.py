@@ -55,13 +55,13 @@ async def promoteFunc(client, message):
     if int(user_data.id) == int(message.from_user.id):
         if message.from_user.id == OWNER_ID:
             # Owner can promote themselves without any restrictions
-            pass
+            pass  # Allow the owner to promote themselves
         else:
             await message.reply("You cannot promote yourself unless you're the owner.")
             return
 
     # For promoting others, check if the promoter (owner) is an admin
-    if int(message.from_user.id) == OWNER_ID:
+    if int(user_data.id) != int(message.from_user.id) and message.from_user.id == OWNER_ID:
         # Owner is allowed to promote others only if they are an admin in the group
         is_admin = await is_administrator(message.from_user.id, message, client)
         if not is_admin:
