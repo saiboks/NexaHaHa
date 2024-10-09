@@ -8,7 +8,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 # Muteall
-@Client.on_message(filters.command("muteall", prefixes=[".", "!", "/"]) & filters.group)
+@app.on_message(filters.command("muteall", prefixes=[".", "!", "/"]) & filters.group)
 async def mute_all(client, message):
     del_u = 0
     admin = await is_administrator(message.from_user.id, message, client)
@@ -41,7 +41,7 @@ async def mute_all(client, message):
 
 
 # Unmuteall
-@Client.on_message(filters.command("unmuteall", prefixes=[".", "!", "/"]) & filters.group)
+@app.on_message(filters.command("unmuteall", prefixes=[".", "!", "/"]) & filters.group)
 async def unmute_all(client, message):
     del_u = 0
     admin = await is_administrator(message.from_user.id, message, client)
