@@ -1,37 +1,14 @@
-from config import OWNER_ID
-from pyrogram import filters, Client
-from AnonXMusic import app
-from pyrogram.types import ChatPrivileges
-from pyrogram.enums import ChatMembersFilter
-
-# Check if user has admin rights
-async def is_administrator(user_id: int, message, client):
-    admin = False
-    administrators = []
-    async for m in app.get_chat_members(message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS):
-        administrators.append(m)
-    for user in administrators:
-        if user.user.id == user_id:
-            admin = True
-            break
-    return admin
-
-
-# Promote function
-@app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".", ","]))
+@app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".",","]))
 async def promoteFunc(client, message):
     try:
-        user = None
         if message.reply_to_message:
             user = message.reply_to_message.from_user.id
         elif len(message.command) > 1:
             user = message.text.split(None, 1)[1]
             if not user.startswith("@"):  # Ensure the username is in correct format
                 user = "@" + user
-
-        if not user:
-            command_name = message.command[0]  # Get the command name
-            await message.reply(f"<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command_name} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs.")
+        else:
+            await message.reply("Invalid command usage.")
             return
 
         user_data = await client.get_users(user)  # Fetch user details
@@ -40,6 +17,10 @@ async def promoteFunc(client, message):
         promoter_mention = message.from_user.mention  # Mention of the person promoting
     except Exception as e:
         await message.reply(f"Invalid ID or user not found. Error: {e}")
+        return
+
+    if not user:
+        await message.reply("User not found.")
         return
 
     # Check if bot has promotion rights
@@ -56,9 +37,9 @@ async def promoteFunc(client, message):
         await message.reply("You don't have permission to promote members.")
         return
 
-    # Allow only the bot's owner to self-promote
+    # Prevent self-promotion unless user is the owner
     if int(user_data.id) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
-        await message.reply("You cannot promote yourself.")
+        await message.reply("You cannot promote yourself unless you're the owner.")
         return
 
     try:
@@ -66,14 +47,14 @@ async def promoteFunc(client, message):
             await message.chat.promote_member(
                 user_id=user_data.id,
                 privileges=ChatPrivileges(
-                    can_change_info=True,
-                    can_invite_users=True,
-                    can_delete_messages=True,
-                    can_restrict_members=True,
-                    can_pin_messages=True,
-                    can_promote_members=True,
-                    can_manage_chat=True,
-                    can_manage_video_chats=True,
+                    can_change_info=bot_privileges.can_change_info,
+                    can_invite_users=bot_privileges.can_invite_users,
+                    can_delete_messages=bot_privileges.can_delete_messages,
+                    can_restrict_members=bot_privileges.can_restrict_members,
+                    can_pin_messages=bot_privileges.can_pin_messages,
+                    can_promote_members=bot_privileges.can_promote_members,
+                    can_manage_chat=bot_privileges.can_manage_chat,
+                    can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
             await message.reply(f"</b>⬤ ғᴜʟʟᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠</b> {group_name}\n\n<b>● ᴘʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
@@ -82,13 +63,13 @@ async def promoteFunc(client, message):
                 user_id=user_data.id,
                 privileges=ChatPrivileges(
                     can_change_info=False,
-                    can_invite_users=True,
-                    can_delete_messages=True,
+                    can_invite_users=bot_privileges.can_invite_users,
+                    can_delete_messages=bot_privileges.can_delete_messages,
                     can_restrict_members=False,
-                    can_pin_messages=True,
+                    can_pin_messages=bot_privileges.can_pin_messages,
                     can_promote_members=False,
-                    can_manage_chat=True,
-                    can_manage_video_chats=True,
+                    can_manage_chat=bot_privileges.can_manage_chat,
+                    can_manage_video_chats=bot_privileges.can_manage_video_chats,
                 ),
             )
             await message.reply(f"<b>⬤ ᴩʀᴏᴍᴏᴛɪɴɢ ᴀ ᴜsᴇʀ ɪɴ ➠</b> {group_name}\n\n<b>● ᴩʀᴏᴍᴏᴛᴇᴅ ᴜsᴇʀ ➠</b> {umention}\n<b>● ᴩʀᴏᴍᴏᴛᴇʀ ʙʏ ➠</b> {promoter_mention}")
