@@ -42,10 +42,6 @@ async def promoteFunc(client, message):
         await message.reply(f"Invalid ID or user not found. Error: {e}")
         return
 
-    if not user:
-        await message.reply("User not found.")
-        return
-
     # Check if bot has promotion rights
     bot_member = await client.get_chat_member(message.chat.id, client.me.id)
     bot_privileges = bot_member.privileges
@@ -61,9 +57,9 @@ async def promoteFunc(client, message):
         return
 
     # Allow only the bot's owner to self-promote
-        if int(user_data.id) == int(message.from_user.id):
-    await message.reply("You cannot promote yourself.")
-    return
+    if int(user_data.id) == int(message.from_user.id) and message.from_user.id != OWNER_ID:
+        await message.reply("You cannot promote yourself.")
+        return
 
     try:
         if message.command[0] == "fullpromote":
