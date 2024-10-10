@@ -231,7 +231,6 @@ def is_valid_url(url):
 
 @app.on_message(filters.command('duck'))
 async def duck_search_(app: app, msg: Message):
-    # Extract query from the message
     split = msg.text.split(None, 1)
     if len(split) == 1:
         return await msg.reply_text("⬤ Please provide a query to search.")
@@ -240,42 +239,34 @@ async def duck_search_(app: app, msg: Message):
     query = split[1]
 
     try:
-        # Perform the search and fetch the result
         result = await dsearch.async_search(query, 1)  # Fetch top search results
         
-        # Extract titles and links from the result
+        # Print the result for debugging
+        print(result)  # Add this line to check the fetched data
+
         titles, links = result['titles'], result['links']
 
-        # Check if results exist
         if not titles or not links:
             await to_del.delete()
             return await msg.reply_text("⬤ No results found for your query.")
         
-        # Prepare the keyboard with valid URLs
         keyboard = []
         for i in range(min(3, len(titles))):  # Limit to top 3 results
             url = links[i]
             if is_valid_url(url):  # Only add buttons with valid URLs
                 keyboard.append([InlineKeyboardButton(titles[i], url=url)])
 
-        # Check if keyboard has valid buttons
         if not keyboard:
             await to_del.delete()
             return await msg.reply_text("⬤ No valid URLs found for the query.")
 
-        # Create an InlineKeyboardMarkup object
         reply_markup = InlineKeyboardMarkup(keyboard)
-
-        # Format the response text
         txt = f"⬤ Here are the top results for ➥ {query.title()}:"
-
-        # Send the results back to the user
         await to_del.delete()
         await msg.reply_text(txt, reply_markup=reply_markup)
         return
 
     except Exception as e:
-        # Handle exceptions if something goes wrong
         await to_del.delete()
         await msg.reply_text(f"⬤ Something went wrong ➥ {e}")
         return
