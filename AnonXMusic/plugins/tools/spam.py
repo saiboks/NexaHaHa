@@ -8,7 +8,7 @@ import asyncio
 # Function to check if the user is an admin or the bot owner
 async def is_administrator(user_id: int, chat_id: int, client: Client):
     # Allow the bot owner to bypass the admin check
-    if user_id == BOT_OWNER_ID:
+    if user_id == OWNER_ID:
         return True
     
     administrators = []
@@ -19,13 +19,13 @@ async def is_administrator(user_id: int, chat_id: int, client: Client):
             return True
     return False
 
-@app.on_message(filters.command(["spam"], prefixes=[".", "/"]) & filters.group)
+@app.on_message(filters.command(["spam"], prefixes=[".", "/", "!",]) & filters.group)
 async def spam(client, message):
     try:
         # Check if the user is an admin or the bot owner
         is_admin = await is_administrator(message.from_user.id, message.chat.id, client)
         if not is_admin:
-            await message.reply("Only admins or the bot owner can use the spam command.")
+            await message.reply("Only admins can use the spam command")
             return
 
         # Split the command text into components
