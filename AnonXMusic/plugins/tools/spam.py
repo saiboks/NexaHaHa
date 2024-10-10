@@ -1,10 +1,16 @@
+from config import OWNER_ID
 from AnonXMusic import app
 from pyrogram import Client, filters
 from pyrogram.enums import ChatMembersFilter
 import asyncio
 
-# Function to check if the user is an admin
+
+# Function to check if the user is an admin or the bot owner
 async def is_administrator(user_id: int, chat_id: int, client: Client):
+    # Allow the bot owner to bypass the admin check
+    if user_id == BOT_OWNER_ID:
+        return True
+    
     administrators = []
     async for m in app.get_chat_members(chat_id, filter=ChatMembersFilter.ADMINISTRATORS):
         administrators.append(m)
@@ -16,10 +22,10 @@ async def is_administrator(user_id: int, chat_id: int, client: Client):
 @app.on_message(filters.command(["spam"], prefixes=[".", "/"]) & filters.group)
 async def spam(client, message):
     try:
-        # Check if the user is an admin
+        # Check if the user is an admin or the bot owner
         is_admin = await is_administrator(message.from_user.id, message.chat.id, client)
         if not is_admin:
-            await message.reply("Only admins can use the spam command.")
+            await message.reply("Only admins or the bot owner can use the spam command.")
             return
 
         # Split the command text into components
