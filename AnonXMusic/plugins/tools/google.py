@@ -4,7 +4,6 @@ from search_engine_parser.core.engines.google import Search as GoogleSearch
 from search_engine_parser.core.engines.stackoverflow import \
     Search as StackSearch
 from search_engine_parser.core.exceptions import NoResultsFound, NoResultsOrTrafficError
-from search_engine_parser.core.engines.duckduckgo import Search as DuckSearch
 from AnonXMusic import app
 from pyrogram import filters
 
@@ -207,7 +206,13 @@ async def stack_search_(app: app, msg: Message):
 
 
 
+from pyrogram import filters
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from search_engine_parser.core.engines.duckduckgo import Search as DuckSearch
+from AnonXMusic import app  # Bot's core module
+
 import re  # To validate URLs
+
 
 # Initialize DuckDuckGo Search
 dsearch = DuckSearch()
