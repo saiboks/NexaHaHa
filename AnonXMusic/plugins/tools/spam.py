@@ -55,7 +55,7 @@ async def spam(client, message):
         # Send messages with a 2-second interval
         for _ in range(number_of_messages):
             await message.reply_text(reason)
-            await asyncio.sleep(2)  # Sleep for 2 seconds asynchronously
+            await asyncio.sleep(0.5)  # Sleep for 2 seconds asynchronously
 
     except Exception as e:
         await message.reply(f"An error occurred: {str(e)}")
