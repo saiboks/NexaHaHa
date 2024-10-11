@@ -100,8 +100,47 @@ async def nxt(c, query):
             [InlineKeyboardButton("ʙᴀᴄᴋ", callback_data="nxt+0")],
         ]
         return await query.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
-    else:
-        return await style_buttons(c, m=query, cb=True)
+    
+    elif query.data == "nxt+0":  # Handling the back button press
+        buttons = [
+            [
+                InlineKeyboardButton("𝚃𝚢𝚙𝚎𝚠𝚛𝚒𝚝𝚎𝚛", callback_data="style+typewriter"),
+                InlineKeyboardButton("𝕆𝕦𝕥𝕝𝕚𝕟𝕖", callback_data="style+outline"),
+                InlineKeyboardButton("𝐒𝐞𝐫𝐢𝐟", callback_data="style+serif"),
+            ],
+            [
+                InlineKeyboardButton("𝑺𝒆𝒓𝒊𝒇", callback_data="style+bold_cool"),
+                InlineKeyboardButton("𝑆𝑒𝑟𝑖𝑓", callback_data="style+cool"),
+                InlineKeyboardButton("Sᴍᴀʟʟ Cᴀᴘs", callback_data="style+small_cap"),
+            ],
+            [
+                InlineKeyboardButton("𝓈𝒸𝓇𝒾𝓅𝓉", callback_data="style+script"),
+                InlineKeyboardButton("𝓼𝓬𝓻𝓲𝓹𝓽", callback_data="style+script_bolt"),
+                InlineKeyboardButton("ᵗⁱⁿʸ", callback_data="style+tiny"),
+            ],
+            [
+                InlineKeyboardButton("ᑕOᗰIᑕ", callback_data="style+comic"),
+                InlineKeyboardButton("𝗦𝗮𝗻𝘀", callback_data="style+sans"),
+                InlineKeyboardButton("𝙎𝙖𝙣𝙨", callback_data="style+slant_sans"),
+            ],
+            [
+                InlineKeyboardButton("𝘚𝘢𝘯𝘴", callback_data="style+slant"),
+                InlineKeyboardButton("𝖲𝖺𝗇𝗌", callback_data="style+sim"),
+                InlineKeyboardButton("Ⓒ︎Ⓘ︎Ⓡ︎Ⓒ︎Ⓛ︎Ⓔ︎Ⓢ︎", callback_data="style+circles"),
+            ],
+            [
+                InlineKeyboardButton("🅒︎🅘︎🅡︎🅒︎🅛︎🅔︎🅢︎", callback_data="style+circle_dark"),
+                InlineKeyboardButton("𝔊𝔬𝔱𝔥𝔦𝔠", callback_data="style+gothic"),
+                InlineKeyboardButton("𝕲𝖔𝖙𝖍𝖎𝖈", callback_data="style+gothic_bolt"),
+            ],
+            [
+                InlineKeyboardButton("C͜͡l͜͡o͜͡u͜͡d͜͡s͜͡", callback_data="style+cloud"),
+                InlineKeyboardButton("H̆̈ă̈p̆̈p̆̈y̆̈", callback_data="style+happy"),
+                InlineKeyboardButton("S̑̈ȃ̈d̑̈", callback_data="style+sad"),
+            ],
+            [InlineKeyboardButton ("ᴄʟᴏsᴇ",callback_data="close_reply"),InlineKeyboardButton ("ɴᴇxᴛ ➤", callback_data="nxt")],
+        ]
+        return await query.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
 
 
 @app.on_callback_query(filters.regex("^style"))
