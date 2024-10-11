@@ -7,8 +7,9 @@ from AnonXMusic import app
 
 @app.on_message(filters.command(["font", "fonts"]))
 async def style_buttons(c, m, cb=False):
-    text = m.text.split(' ',1)[1]
+    text = m.text.split(' ', 1)[1]
 
+    # Command message delete karne ke liye
     await m.delete()
 
     buttons = [
@@ -47,8 +48,9 @@ async def style_buttons(c, m, cb=False):
             InlineKeyboardButton("H̆̈ă̈p̆̈p̆̈y̆̈", callback_data="style+happy"),
             InlineKeyboardButton("S̑̈ȃ̈d̑̈", callback_data="style+sad"),
         ],
-        [InlineKeyboardButton ("ᴄʟᴏsᴇ",callback_data="close_reply"),InlineKeyboardButton ("ɴᴇxᴛ ➤", callback_data="nxt")],
+        [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close_reply"), InlineKeyboardButton("ɴᴇxᴛ ➤", callback_data="nxt")],
     ]
+
     if not cb:
         await m.reply_text(
             f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True
