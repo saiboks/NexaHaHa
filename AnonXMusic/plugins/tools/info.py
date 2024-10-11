@@ -4,16 +4,10 @@ from AnonXMusic import app
 from pyrogram import filters, Client, enums
 from pyrogram.enums import ParseMode
 from pyrogram.types import *
-from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent
 from typing import Union, Optional
 
-EVAA = [
-    [
-        InlineKeyboardButton(text="ᴀᴅᴅ ᴍᴇ ʙᴀʙʏ", url=f"https://t.me/Arthey_bot?startgroup=true"),
-    ],
-]
 
-# --------------------------------------------------------------------------------- #
 
 INFO_TEXT = """
 <u><b>ᴜsᴇʀ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b></u>
@@ -63,7 +57,7 @@ async def userinfo(_, message):
             mention = user.mention
             bio = user_info.bio
             await app.send_message(chat_id, text=INFO_TEXT.format(
-                id, username, mention, status, dc_id), reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup(EVAA),)
+                id, username, mention, status, dc_id), reply_to_message_id=message.id)
         except Exception as e:
             await message.reply_text(str(e))        
 
@@ -79,7 +73,7 @@ async def userinfo(_, message):
             mention = user.mention
             bio = user_info.bio
             await app.send_message(chat_id, text=INFO_TEXT.format(
-                id, username, mention, status, dc_id), reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup(EVAA),)
+                id, username, mention, status, dc_id), reply_to_message_id=message.id)
         except Exception as e:
             await message.reply_text(str(e))
 
@@ -97,6 +91,6 @@ async def userinfo(_, message):
             mention = user.mention
             bio = user_info.bio
             await app.send_message(chat_id, text=INFO_TEXT.format(
-                id, username, mention, status, dc_id), reply_to_message_id=message.id, reply_markup=InlineKeyboardMarkup(EVAA),)
+                id, username, mention, status, dc_id), reply_to_message_id=message.id)
         except Exception as e:
             await message.reply_text(str(e))
