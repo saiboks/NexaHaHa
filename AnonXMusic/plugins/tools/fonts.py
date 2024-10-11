@@ -9,9 +9,6 @@ from AnonXMusic import app
 async def style_buttons(c, m, cb=False):
     text = m.text.split(' ', 1)[1]
 
-    # Command message delete karne ke liye
-    await m.delete()
-
     buttons = [
         [
             InlineKeyboardButton("𝚃𝚢𝚙𝚎𝚠𝚛𝚒𝚝𝚎𝚛", callback_data="style+typewriter"),
@@ -51,13 +48,11 @@ async def style_buttons(c, m, cb=False):
         [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close_reply"), InlineKeyboardButton("ɴᴇxᴛ ➤", callback_data="nxt")],
     ]
 
-    if not cb:
-        await m.reply_text(
-            f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True
-        )
-    else:
-        await m.answer()
-        await m.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
+    # Pehle reply text bhejenge, uske baad command delete karenge
+    await m.reply_text(f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True)
+
+    # Command message delete karne ke liye
+        await m.delete()
 
 
 @app.on_callback_query(filters.regex("^nxt"))
