@@ -54,7 +54,6 @@ async def style_buttons(c, m, cb=False):
     # Command message delete karne ke liye
         await m.delete()
     else:
-        await m.answer()
         await m.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
 
 
