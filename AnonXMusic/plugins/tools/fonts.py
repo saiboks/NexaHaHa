@@ -7,8 +7,7 @@ from AnonXMusic import app
 
 @app.on_message(filters.command(["font", "fonts"]))
 async def style_buttons(c, m, cb=False):
-    text = m.text.split(' ', 1)[1]
-
+    text = m.text.split(' ',1)[1]
     buttons = [
         [
             InlineKeyboardButton("𝚃𝚢𝚙𝚎𝚠𝚛𝚒𝚝𝚎𝚛", callback_data="style+typewriter"),
@@ -41,15 +40,12 @@ async def style_buttons(c, m, cb=False):
             InlineKeyboardButton("𝕲𝖔𝖙𝖍𝖎𝖈", callback_data="style+gothic_bolt"),
         ],
         [
-            InlineKeyboardButton("C͜͡l͜͡o͜͡u͜͡d͜͡s͜͡", callback_data="style+cloud"),
-            InlineKeyboardButton("H̆̈ă̈p̆̈p̆̈y̆̈", callback_data="style+happy"),
-            InlineKeyboardButton("S̑̈ȃ̈d̑̈", callback_data="style+sad"),
+            InlineKeyboardButton("C‌‌l‌‌o‌‌u‌‌d‌‌s‌‌", callback_data="style+cloud"),
+            InlineKeyboardButton("H‌‌a‌‌p‌‌p‌‌y‌‌", callback_data="style+happy"),
+            InlineKeyboardButton("S‌‌a‌‌d‌‌", callback_data="style+sad"),
         ],
-        [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close_reply"), InlineKeyboardButton("ɴᴇxᴛ ➤", callback_data="nxt")],
+        [InlineKeyboardButton ("ᴄʟᴏsᴇ",callback_data="close_reply"),InlineKeyboardButton ("ɴᴇxᴛ ➤", callback_data="nxt")],
     ]
-
-    await m.reply_text(f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True)
-
     if not cb:
         await m.reply_text(
             f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True
