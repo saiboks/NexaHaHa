@@ -50,6 +50,10 @@ async def style_buttons(c, m, cb=False):
 
     await m.reply_text(f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True)
 
+    if not cb:
+        await m.reply_text(
+            f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True
+        )
     else:
         await m.answer()
         await m.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
