@@ -57,7 +57,7 @@ async def style_buttons(c, m, cb=False):
 
 @app.on_callback_query(filters.regex("^nxt"))
 async def nxt(c, query):
-    if m.data == "nxt":
+    if query.data == "nxt":
         buttons = [
             [
                 InlineKeyboardButton("🇸 🇵 🇪 🇨 🇮 🇦 🇱 ", callback_data="style+special"),
@@ -99,10 +99,9 @@ async def nxt(c, query):
             ],
             [InlineKeyboardButton("ʙᴀᴄᴋ", callback_data="nxt+0")],
         ]
-        if query.data == "nxt+0":
-               return await query.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
-        else:
-               return await style_buttons(c, m=query, cb=True)
+        return await query.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
+    else:
+        return await style_buttons(c, m=query, cb=True)
 
 
 @app.on_callback_query(filters.regex("^style"))
