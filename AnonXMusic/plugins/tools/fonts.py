@@ -8,6 +8,9 @@ from AnonXMusic import app
 @app.on_message(filters.command(["font", "fonts"]))
 async def style_buttons(c, m, cb=False):
     text = m.text.split(' ',1)[1]
+
+    await m.delete()
+
     buttons = [
         [
             InlineKeyboardButton("𝚃𝚢𝚙𝚎𝚠𝚛𝚒𝚝𝚎𝚛", callback_data="style+typewriter"),
