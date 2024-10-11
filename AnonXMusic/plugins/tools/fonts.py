@@ -99,7 +99,7 @@ async def nxt(c, m):
             ],
             [InlineKeyboardButton("ʙᴀᴄᴋ", callback_data="nxt+0")],
         ]
-        if query.data == "nxt":
+        if query.data == "nxt+0":
                return await query.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
         else:
                return await style_buttons(c, m=query, cb=True)
