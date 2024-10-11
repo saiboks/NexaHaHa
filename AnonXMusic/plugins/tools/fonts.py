@@ -48,8 +48,8 @@ async def style_buttons(c, m, cb=False):
         [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close_reply"), InlineKeyboardButton("ɴᴇxᴛ ➤", callback_data="nxt")],
     ]
 
-    # Pehle reply text bhejenge, uske baad command delete karenge
     await m.reply_text(f"`{text}`", reply_markup=InlineKeyboardMarkup(buttons), quote=True)
+
     else:
         await m.answer()
         await m.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
