@@ -1,6 +1,6 @@
 import asyncio
 from pyrogram import Client, filters, enums
-from pyrogram.errors import ChatAdminRequired, UserNotParticipant
+from pyrogram.errors import ChatAdminRequired, UserNotParticipant, BadRequest
 from config import OWNER_ID
 from AnonXMusic import app
 
@@ -30,26 +30,26 @@ async def kick_all(client, message):
     if not bot_member.can_restrict_members:
         return await response_message.edit("Bot doesn't have permission to kick members.")
 
-    # Get list of chat members
     async for user in client.get_chat_members(message.chat.id):
         if user.user.id != client.me.id:  # Skip the bot itself
-            if not await is_administrator(user.user.id, message.chat.id, client) and not await is_owner(user.user.id):
-                try:
-                    # Kick the user (temporary removal)
+            try:
+                if not await is_administrator(user.user.id, message.chat.id, client) and not await is_owner(user.user.id):
                     await client.kick_chat_member(message.chat.id, user.user.id)
                     kicked_count += 1
                     await asyncio.sleep(1)  # Wait a bit to avoid hitting API limits
-                except ChatAdminRequired:
-                    return await response_message.edit("Bot doesn't have permission to kick members in this group.")
-                except UserNotParticipant:
-                    # If the user is not in the chat, ignore and continue
-                    continue
-                except Exception as e:
-                    # Log any other errors
-                    print(f"Error while kicking {user.user.id}: {str(e)}")
-                    continue
+            except ChatAdminRequired:
+                return await response_message.edit("Bot doesn't have permission to kick members in this group.")
+            except UserNotParticipant:
+                continue  # If the user is not in the chat, ignore and continue
+            except BadRequest as e:
+                # Handle specific exceptions if needed
+                print(f"BadRequest for user {user.user.id}: {str(e)}")
+                continue
+            except Exception as e:
+                # Log any other errors
+                print(f"Error while kicking {user.user.id}: {str(e)}")
+                continue
 
-    final_count = len([user async for user in client.get_chat_members(message.chat.id)])
     del_status = f"Kicked {kicked_count} members" if kicked_count > 0 else "No members to kick."
     await response_message.edit(del_status)
     await asyncio.sleep(5)  # Wait 5 seconds before deleting the message
