@@ -19,32 +19,60 @@ async def mute_all_users(client, message):
             await message.reply_text("Only the bot owner or the group owner can use this command.")
             return
 
+    # Send confirmation message with buttons
+    buttons = InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton("Approve", callback_data="approve_mute"),
+            InlineKeyboardButton("Decline", callback_data="decline_mute")
+        ]]
+    )
+    await message.reply_text("Do you really want to mute all members?", reply_markup=buttons)
+
+
+# Callback for Mute All Approval
+@app.on_callback_query(filters.regex("approve_mute"))
+async def approve_mute(client, callback_query: CallbackQuery):
+    message = callback_query.message
+    chat_id = message.chat.id
+
+    # Check if user has the right to approve
+    issuer = callback_query.from_user
+    if issuer.id != OWNER_ID:
+        issuer_member = await client.get_chat_member(chat_id, issuer.id)
+        if issuer_member.status != ChatMemberStatus.OWNER:
+            await callback_query.answer("Only the bot owner or the group owner can approve this.", show_alert=True)
+            return
+
+    # Mute all non-admin members
     bot = await client.get_chat_member(chat_id, client.me.id)
     if not bot.privileges.can_restrict_members:
-        await message.reply_text("I don't have the permission to mute users.")
+        await message.edit_text("I don't have the permission to mute users.")
         return
 
-    # Send starting message
-    starting_message = await message.reply_text("ᴍᴜᴛᴇᴀʟʟ sᴛᴀʀᴛɪɴɢ . . .")
-
-    muted_count = 0  # To track how many members are muted
+    starting_message = await message.edit_text("ᴍᴜᴛᴇᴀʟʟ sᴛᴀʀᴛɪɴɢ . . .")
+    muted_count = 0
 
     async for member in client.get_chat_members(chat_id):
         if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER] and member.user.id != OWNER_ID:
-            # Skip muting the bot owner (OWNER_ID)
             try:
-                # Mute the user (restrict sending messages)
                 await client.restrict_chat_member(
                     chat_id,
                     member.user.id,
                     permissions=ChatPermissions(can_send_messages=False)
                 )
-                muted_count += 1  # Increment counter for each successfully muted member
+                muted_count += 1
             except Exception as e:
                 await message.reply_text(f"Failed to mute {member.user.first_name}: {str(e)}")
 
-    # Edit the starting message with the final count
     await starting_message.edit_text(f"Muted {muted_count} non-admin members successfully.")
+    await callback_query.answer()
+
+
+# Callback for Decline
+@app.on_callback_query(filters.regex("decline_mute"))
+async def decline_mute(client, callback_query: CallbackQuery):
+    await callback_query.message.edit_text("Mute operation has been declined.")
+    await callback_query.answer()
 
 
 # Unmute All command
@@ -60,20 +88,42 @@ async def unmute_all_users(client, message):
             await message.reply_text("Only the bot owner or the group owner can use this command.")
             return
 
+    # Send confirmation message with buttons
+    buttons = InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton("Approve", callback_data="approve_unmute"),
+            InlineKeyboardButton("Decline", callback_data="decline_unmute")
+        ]]
+    )
+    await message.reply_text("Do you really want to unmute all members?", reply_markup=buttons)
+
+
+# Callback for Unmute All Approval
+@app.on_callback_query(filters.regex("approve_unmute"))
+async def approve_unmute(client, callback_query: CallbackQuery):
+    message = callback_query.message
+    chat_id = message.chat.id
+
+    # Check if user has the right to approve
+    issuer = callback_query.from_user
+    if issuer.id != OWNER_ID:
+        issuer_member = await client.get_chat_member(chat_id, issuer.id)
+        if issuer_member.status != ChatMemberStatus.OWNER:
+            await callback_query.answer("Only the bot owner or the group owner can approve this.", show_alert=True)
+            return
+
+    # Unmute all non-admin members
     bot = await client.get_chat_member(chat_id, client.me.id)
     if not bot.privileges.can_restrict_members:
-        await message.reply_text("I don't have the permission to unmute users.")
+        await message.edit_text("I don't have the permission to unmute users.")
         return
 
-    # Send starting message
-    starting_message = await message.reply_text("ᴜɴᴍᴜᴛᴇᴀʟʟ sᴛᴀʀᴛɪɴɢ . . .")
-
-    unmuted_count = 0  # To track how many members are unmuted
+    starting_message = await message.edit_text("ᴜɴᴍᴜᴛᴇᴀʟʟ sᴛᴀʀᴛɪɴɢ . . .")
+    unmuted_count = 0
 
     async for member in client.get_chat_members(chat_id):
         if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
             try:
-                # Unmute the user (restore permissions)
                 await client.restrict_chat_member(
                     chat_id,
                     member.user.id,
@@ -87,9 +137,16 @@ async def unmute_all_users(client, message):
                         can_pin_messages=True
                     )
                 )
-                unmuted_count += 1  # Increment counter for each successfully unmuted member
+                unmuted_count += 1
             except Exception as e:
                 await message.reply_text(f"Failed to unmute {member.user.first_name}: {str(e)}")
 
-    # Edit the starting message with the final count
     await starting_message.edit_text(f"Unmuted {unmuted_count} non-admin members successfully.")
+    await callback_query.answer()
+
+
+# Callback for Decline
+@app.on_callback_query(filters.regex("decline_unmute"))
+async def decline_unmute(client, callback_query: CallbackQuery):
+    await callback_query.message.edit_text("Unmute operation has been declined.")
+    await callback_query.answer()
