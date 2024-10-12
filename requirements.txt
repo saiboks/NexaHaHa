@@ -9,6 +9,7 @@ gtts
 hachoir
 heroku3
 motor
+pbot
 pillow
 psutil
 py-tgcalls==0.9.7
