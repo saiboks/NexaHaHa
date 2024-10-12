@@ -29,7 +29,8 @@ async def kick_all(client, message):
     async for user in client.get_chat_members(message.chat.id):
         if not await is_administrator(user.user.id, message, client) and not await is_owner(user.user.id, message, client):
             try:
-                await client.ban_chat_member(message.chat.id, user.user.id)
+                # Kick the user (temporary removal)
+                await client.kick_chat_member(message.chat.id, user.user.id)
                 kicked_count += 1
             except ChatAdminRequired:
                 return await response_message.edit("Bot doesn't have permission to kick members in this group.")  # Edit response
