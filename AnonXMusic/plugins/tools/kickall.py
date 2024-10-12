@@ -5,20 +5,20 @@ from pyrogram.errors import ChatAdminRequired
 from config import OWNER_ID
 from AnonXMusic import app
 
-# Check if user is admin
-async def is_administrator(user_id, message, client):
-    member = await client.get_chat_member(message.chat.id, user_id)
+# Function to check if user is an administrator
+async def is_administrator(user_id, chat_id, client):
+    member = await client.get_chat_member(chat_id, user_id)
     return member.status in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]
 
-# Check if user is owner
-async def is_owner(user_id, message, client):
+# Function to check if user is the owner
+async def is_owner(user_id):
     return user_id == OWNER_ID
 
 @app.on_message(filters.command("kickall", prefixes=[".", "!", "/", ","]) & filters.group)
 async def kick_all(client, message):
     kicked_count = 0
-    admin = await is_administrator(message.from_user.id, message, client)
-    owner = await is_owner(message.from_user.id, message, client)
+    admin = await is_administrator(message.from_user.id, message.chat.id, client)
+    owner = await is_owner(message.from_user.id)
 
     if not admin and not owner:
         return await message.reply("Sorry, you are not allowed to use this command!")  # Use reply instead of edit
@@ -32,16 +32,16 @@ async def kick_all(client, message):
         return await response_message.edit("Bot doesn't have permission to kick members.")
 
     async for user in client.get_chat_members(message.chat.id):
-        if not await is_administrator(user.user.id, message, client) and not await is_owner(user.user.id, message, client):
+        if not await is_administrator(user.user.id, message.chat.id, client) and not await is_owner(user.user.id):
             try:
                 # Kick the user (temporary removal)
                 await client.kick_chat_member(message.chat.id, user.user.id)
-                await client.unban_chat_member(message.chat.id, user.user.id)  # Ensure it's just a kick, not a ban
+                await client.unban_chat_member(message.chat.id, user.user.id)  # Ensure it's just a kick
                 kicked_count += 1
             except ChatAdminRequired:
-                return await response_message.edit("Bot doesn't have permission to kick members in this group.")  # Edit response
+                return await response_message.edit("Bot doesn't have permission to kick members in this group.")
             except Exception as e:
-                # Catch other errors and log them
+                # Log any other errors
                 await response_message.edit(f"Error while kicking {user.user.id}: {str(e)}")
                 continue
 
