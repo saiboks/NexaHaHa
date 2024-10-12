@@ -30,7 +30,8 @@ async def mute_all_users(client, message):
     muted_count = 0  # To track how many members are muted
 
     async for member in client.get_chat_members(chat_id):
-        if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
+        if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER] and member.user.id != OWNER_ID:
+            # Skip muting the bot owner (OWNER_ID)
             try:
                 # Mute the user (restrict sending messages)
                 await client.restrict_chat_member(
