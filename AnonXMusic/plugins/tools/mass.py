@@ -22,6 +22,9 @@ async def mute_all_users(client, message):
         await message.reply_text("I don't have the permission to mute users.")
         return
 
+    # Send starting message
+    starting_message = await message.reply_text("ᴍᴜᴛᴇᴀʟʟ sᴛᴀʀᴛɪɴɢ . . .")
+
     muted_count = 0  # To track how many members are muted
 
     async for member in client.get_chat_members(chat_id):
@@ -37,7 +40,8 @@ async def mute_all_users(client, message):
             except Exception as e:
                 await message.reply_text(f"Failed to mute {member.user.first_name}: {str(e)}")
 
-    await message.reply_text(f"Muted {muted_count} non-admin members successfully.")
+    # Edit the starting message with the final count
+    await starting_message.edit_text(f"Muted {muted_count} non-admin members successfully.")
 
 
 # Unmute All command
@@ -56,6 +60,9 @@ async def unmute_all_users(client, message):
     if not bot.privileges.can_restrict_members:
         await message.reply_text("I don't have the permission to unmute users.")
         return
+
+    # Send starting message
+    starting_message = await message.reply_text("ᴜɴᴍᴜᴛᴇᴀʟʟ sᴛᴀʀᴛɪɴɢ . . .")
 
     unmuted_count = 0  # To track how many members are unmuted
 
@@ -80,4 +87,5 @@ async def unmute_all_users(client, message):
             except Exception as e:
                 await message.reply_text(f"Failed to unmute {member.user.first_name}: {str(e)}")
 
-    await message.reply_text(f"Unmuted {unmuted_count} non-admin members successfully.")
+    # Edit the starting message with the final count
+    await starting_message.edit_text(f"Unmuted {unmuted_count} non-admin members successfully.")
