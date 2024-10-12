@@ -1,6 +1,6 @@
 import asyncio
 from pyrogram import Client, filters, enums
-from pyrogram.errors import ChatAdminRequired
+from pyrogram.errors import ChatAdminRequired, UserNotParticipant
 from config import OWNER_ID
 from AnonXMusic import app
 
@@ -30,16 +30,20 @@ async def kick_all(client, message):
     if not bot_member.can_restrict_members:
         return await response_message.edit("Bot doesn't have permission to kick members.")
 
+    # Get list of chat members
     async for user in client.get_chat_members(message.chat.id):
         if user.user.id != client.me.id:  # Skip the bot itself
             if not await is_administrator(user.user.id, message.chat.id, client) and not await is_owner(user.user.id):
                 try:
                     # Kick the user (temporary removal)
                     await client.kick_chat_member(message.chat.id, user.user.id)
-                    await asyncio.sleep(1)  # Wait a bit to avoid hitting API limits
                     kicked_count += 1
+                    await asyncio.sleep(1)  # Wait a bit to avoid hitting API limits
                 except ChatAdminRequired:
                     return await response_message.edit("Bot doesn't have permission to kick members in this group.")
+                except UserNotParticipant:
+                    # If the user is not in the chat, ignore and continue
+                    continue
                 except Exception as e:
                     # Log any other errors
                     print(f"Error while kicking {user.user.id}: {str(e)}")
