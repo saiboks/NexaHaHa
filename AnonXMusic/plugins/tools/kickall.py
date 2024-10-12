@@ -26,14 +26,24 @@ async def kick_all(client, message):
     response_message = await message.reply("Kicking all members...")
     initial_count = len([user async for user in client.get_chat_members(message.chat.id)])
 
+    # Ensure bot has the right permissions
+    bot_member = await client.get_chat_member(message.chat.id, client.me.id)
+    if not bot_member.can_restrict_members:
+        return await response_message.edit("Bot doesn't have permission to kick members.")
+
     async for user in client.get_chat_members(message.chat.id):
         if not await is_administrator(user.user.id, message, client) and not await is_owner(user.user.id, message, client):
             try:
                 # Kick the user (temporary removal)
                 await client.kick_chat_member(message.chat.id, user.user.id)
+                await client.unban_chat_member(message.chat.id, user.user.id)  # Ensure it's just a kick, not a ban
                 kicked_count += 1
             except ChatAdminRequired:
                 return await response_message.edit("Bot doesn't have permission to kick members in this group.")  # Edit response
+            except Exception as e:
+                # Catch other errors and log them
+                await response_message.edit(f"Error while kicking {user.user.id}: {str(e)}")
+                continue
 
     final_count = len([user async for user in client.get_chat_members(message.chat.id)])
     del_status = f"Kicked {kicked_count} members" if kicked_count > 0 else "No members to kick."
