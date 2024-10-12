@@ -1,4 +1,5 @@
 import config
+from config import OWNER_ID
 from AnonXMusic import app
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions, CallbackQuery
@@ -11,11 +12,12 @@ async def mute_all_users(client, message):
     chat_id = message.chat.id
     issuer = message.from_user  # The user issuing the mute command
 
-    # Ensure the user issuing the command has ban rights
-    issuer_member = await client.get_chat_member(chat_id, issuer.id)
-    if issuer_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER] or not issuer_member.privileges.can_restrict_members:
-        await message.reply_text("You don't have permission to mute users.")
-        return
+    # Ensure the user issuing the command is either the bot owner or the group owner
+    if issuer.id != OWNER_ID:
+        issuer_member = await client.get_chat_member(chat_id, issuer.id)
+        if issuer_member.status != ChatMemberStatus.OWNER:
+            await message.reply_text("Only the bot owner or the group owner can use this command.")
+            return
 
     bot = await client.get_chat_member(chat_id, client.me.id)
     if not bot.privileges.can_restrict_members:
@@ -50,11 +52,12 @@ async def unmute_all_users(client, message):
     chat_id = message.chat.id
     issuer = message.from_user  # The user issuing the unmute command
 
-    # Ensure the user issuing the command has ban rights
-    issuer_member = await client.get_chat_member(chat_id, issuer.id)
-    if issuer_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER] or not issuer_member.privileges.can_restrict_members:
-        await message.reply_text("You don't have permission to unmute users.")
-        return
+    # Ensure the user issuing the command is either the bot owner or the group owner
+    if issuer.id != OWNER_ID:
+        issuer_member = await client.get_chat_member(chat_id, issuer.id)
+        if issuer_member.status != ChatMemberStatus.OWNER:
+            await message.reply_text("Only the bot owner or the group owner can use this command.")
+            return
 
     bot = await client.get_chat_member(chat_id, client.me.id)
     if not bot.privileges.can_restrict_members:
