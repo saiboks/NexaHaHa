@@ -18,7 +18,7 @@ async def is_administrator(user_id: int, message, client):
 
 
 # Promote function
-@app.on_message(filters.command(["promote", "fullpromote"], "."))
+@app.on_message(filters.command(["promote", "fullpromote"], prefixes=["/", "!", ".",","]))
 async def promoteFunc(client, message):
     try:
         if message.reply_to_message:
