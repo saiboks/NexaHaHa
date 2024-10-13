@@ -16,7 +16,7 @@ async def mute_all_users(client, message):
     if issuer.id != OWNER_ID:
         issuer_member = await client.get_chat_member(chat_id, issuer.id)
         if issuer_member.status != ChatMemberStatus.OWNER:
-            await message.reply_text("Only the bot owner or the group owner can use this command.")
+            await message.reply_text("ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴛᴏ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ. ᴏɴʟʏ ᴛʜᴇ ɢʀᴏᴜᴘ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs.")
             return
 
     # Send confirmation message with buttons
@@ -85,7 +85,7 @@ async def unmute_all_users(client, message):
     if issuer.id != OWNER_ID:
         issuer_member = await client.get_chat_member(chat_id, issuer.id)
         if issuer_member.status != ChatMemberStatus.OWNER:
-            await message.reply_text("Only the bot owner or the group owner can use this command.")
+            await message.reply_text("ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴛᴏ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ. ᴏɴʟʏ ᴛʜᴇ ɢʀᴏᴜᴘ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs.")
             return
 
     # Send confirmation message with buttons
@@ -109,7 +109,7 @@ async def approve_unmute(client, callback_query: CallbackQuery):
     if issuer.id != OWNER_ID:
         issuer_member = await client.get_chat_member(chat_id, issuer.id)
         if issuer_member.status != ChatMemberStatus.OWNER:
-            await callback_query.answer("Only the bot owner or the group owner can approve this.", show_alert=True)
+            await callback_query.answer("ᴏɴʟʏ ᴛʜᴇ ɢʀᴏᴜᴘ ᴏᴡɴᴇʀ ᴄᴀɴ ᴀᴘᴘʀᴏᴠᴇ ᴛʜɪs.", show_alert=True)
             return
 
     # Unmute all non-admin members
