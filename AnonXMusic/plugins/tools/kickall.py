@@ -30,10 +30,16 @@ from config import BANNED_USERS
 
 warnsdb = mongodb.warns
 
-# kickall with approve/decline buttons
+# kickall with approve/decline buttons, restricted to bot owner or group owner
 @app.on_message(filters.command("kickall") & ~filters.private & ~BANNED_USERS)
-@adminsOnly("can_restrict_members")
 async def kick_all_func(_, message: Message):
+    user_id = message.from_user.id
+
+    # Check if the user is the bot owner or the group owner
+    chat_member = await app.get_chat_member(message.chat.id, user_id)
+    if user_id not in SUDOERS and chat_member.status != ChatMemberStatus.OWNER:
+        return await message.reply_text("❌ Only the bot owner or the group owner can use this command.")
+
     # Create inline keyboard for approval
     buttons = InlineKeyboardMarkup(
         [
@@ -53,12 +59,12 @@ async def kick_all_func(_, message: Message):
 # Callback query handler for approve/decline
 @app.on_callback_query(filters.regex("^(approve_kickall|decline_kickall)$"))
 async def handle_kickall_confirmation(client, callback_query: CallbackQuery):
-    # Only allow admins or SUDOERS to approve/decline the action
     user_id = callback_query.from_user.id
     chat_member = await client.get_chat_member(callback_query.message.chat.id, user_id)
 
-    if user_id not in SUDOERS and chat_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
-        await callback_query.answer("❌ You are not authorized to perform this action.", show_alert=True)
+    # Check if the user is the bot owner or the group owner
+    if user_id not in SUDOERS and chat_member.status != ChatMemberStatus.OWNER:
+        await callback_query.answer("❌ Only the bot owner or the group owner can perform this action.", show_alert=True)
         return
 
     if callback_query.data == "approve_kickall":
