@@ -644,3 +644,14 @@ async def remove_banned_user(user_id: int):
     if not is_gbanned:
         return
     return await blockeddb.delete_one({"user_id": user_id})
+
+
+async def save_filter(chat_id: int, name: str, _filter: dict):
+    name = name.lower().strip()
+    _filters = await _get_filters(chat_id)
+    _filters[name] = _filter
+    await filtersdb.update_one(
+        {"chat_id": chat_id},
+        {"$set": {"filters": _filters}},
+        upsert=True,
+    )
