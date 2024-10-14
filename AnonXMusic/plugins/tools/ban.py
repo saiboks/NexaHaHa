@@ -34,15 +34,6 @@ warnsdb = mongodb.warns
 @app.on_message(filters.command(["kick", "skick"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def kickFunc(_, message: Message):
-    # Check bot's permissions first
-    bot_permissions = await app.get_chat_member(message.chat.id, app.id)
-    
-    if not bot_permissions.can_restrict_members:
-        return await message.reply_text("Mujhe members ko kick/ban karne ki permissions nahi di gayi!")
-    
-    if not bot_permissions.can_delete_messages and message.command[0][0] == "s":
-        return await message.reply_text("Mujhe messages delete karne ki permissions nahi di gayi!")
-    
     user_id, reason = await extract_user_and_reason(message)
     if not user_id:
         return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ")
@@ -64,7 +55,6 @@ async def kickFunc(_, message: Message):
 <b>ᴋɪᴄᴋᴇᴅ ᴜsᴇʀ ➠</b> {mention}
 <b>ᴋɪᴄᴋᴇᴅ ʙʏ ➠</b> {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
 <b>ʀᴇᴀsᴏɴ ➠</b> {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠɪᴅᴇᴅ'}"""
-    
     await message.chat.ban_member(user_id)
     replied_message = message.reply_to_message
     if replied_message:
