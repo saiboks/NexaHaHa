@@ -36,37 +36,34 @@ warnsdb = mongodb.warns
 async def kickFunc(_, message: Message):
     user_id, reason = await extract_user_and_reason(message)
     if not user_id:
-        return await message.reply_text("I can't find that user.")
+        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ")
     if user_id == app.id:
-        return await message.reply_text("I can't kick myself, but I can leave if you want.")
+        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴋɪᴄᴋ ᴍʏsᴇʟғ, ɪ ᴄᴀɴ ʟᴇᴀᴠᴇ ɪғ ʏᴏᴜ ᴡᴀɴᴛ.")
     if user_id in SUDOERS:
-        return await message.reply_text("You wanna kick an elevated one?")
+        return await message.reply_text("ʏᴏᴜ ᴡᴀɴɴᴀ ᴋɪᴄᴋ ᴛʜᴇ ᴇʟᴇᴠᴀᴛᴇᴅ ᴏɴᴇ ?")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
             chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
         )
     ]:
-        return await message.reply_text("I can't kick an admin.")
-    
-    # Kick message
+        return await message.reply_text(
+            "ɪ ᴄᴀɴ'ᴛ ᴋɪᴄᴋ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs, sᴏ ᴅᴏ ɪ "
+        )
     mention = (await app.get_users(user_id)).mention
     msg = f"""
-<b>Kicked by:</b> {message.from_user.mention if message.from_user else 'Anonymous'}
-<b>Reason:</b> {reason or 'No reason provided'}"""
-    
+<b>ᴋɪᴄᴋᴇᴅ ᴜsᴇʀ ➠</b> {mention}
+<b>ᴋɪᴄᴋᴇᴅ ʙʏ ➠</b> {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
+<b>ʀᴇᴀsᴏɴ ➠</b> {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠɪᴅᴇᴅ'}"""
     await message.chat.ban_member(user_id)
-    
-    # Check for silent kick 'skick'
+    replied_message = message.reply_to_message
+    if replied_message:
+        message = replied_message
+    await message.reply_text(msg)
+    await asyncio.sleep(1)
+    await message.chat.unban_member(user_id)
+
     if message.command[0][0] == "s":
         if message.reply_to_message:  # Ensure reply_to_message exists before trying to delete it
             await message.reply_to_message.delete()
-        await app.delete_user_history(message.chat.id, user_id)  # Delete user history
-        await message.delete()  # Delete the command message as well
-    else:
-        # Send kick message for 'kick' command
-        await message.reply_text(msg)
-    
-    # Unban the user after a short delay
-    await asyncio.sleep(1)
-    await message.chat.unban_member(user_id)
+        await app.delete_user_history(message.chat.id, user_id)
