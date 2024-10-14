@@ -55,9 +55,9 @@ async def banFunc(_, message: Message):
 
     # Rest of the ban logic
     if user_id == app.id:
-        return await message.reply_text("I can't ban myself, i can leave if you want.")
+        return await message.reply_text("I can't ban myself, I can leave if you want.")
     if user_id in SUDOERS:
-        return await message.reply_text("You Wanna Ban The Elevated One?, RECONSIDER!")
+        return await message.reply_text("You Wanna Ban The Elevated One? RECONSIDER!")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
@@ -65,7 +65,7 @@ async def banFunc(_, message: Message):
         )
     ]:
         return await message.reply_text(
-            "I can't ban an admin, You know the rules, so do i."
+            "I can't ban an admin, You know the rules, so do I."
         )
 
     try:
@@ -81,10 +81,10 @@ async def banFunc(_, message: Message):
         f"**Banned User:** {mention}\n"
         f"**Banned By:** {message.from_user.mention if message.from_user else 'Anon'}\n"
     )
-    
+
     if reason:
         msg += f"**Reason:** {reason}"
-    
+
     await message.chat.ban_member(user_id)
     replied_message = message.reply_to_message
     if replied_message:
