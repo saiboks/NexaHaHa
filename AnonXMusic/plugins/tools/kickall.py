@@ -53,6 +53,14 @@ async def kick_all_func(_, message: Message):
 # Callback query handler for approve/decline
 @app.on_callback_query(filters.regex("^(approve_kickall|decline_kickall)$"))
 async def handle_kickall_confirmation(client, callback_query: CallbackQuery):
+    # Only allow admins or SUDOERS to approve/decline the action
+    user_id = callback_query.from_user.id
+    chat_member = await client.get_chat_member(callback_query.message.chat.id, user_id)
+
+    if user_id not in SUDOERS and chat_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
+        await callback_query.answer("❌ You are not authorized to perform this action.", show_alert=True)
+        return
+
     if callback_query.data == "approve_kickall":
         await callback_query.message.edit_text("✅ Kicking all members...")
         kicked_count = 0
@@ -77,8 +85,3 @@ async def handle_kickall_confirmation(client, callback_query: CallbackQuery):
         )
     elif callback_query.data == "decline_kickall":
         await callback_query.message.edit_text("❌ Kickall operation cancelled.")
-
-# Ensure only admins can press the button
-@app.on_callback_query(filters.regex("^(approve_kickall|decline_kickall)$") & ~filters.user(SUDOERS))
-async def unauthorized_callback(_, callback_query: CallbackQuery):
-    await callback_query.answer("❌ You are not authorized to perform this action.", show_alert=True)
