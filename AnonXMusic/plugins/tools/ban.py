@@ -64,6 +64,6 @@ async def kickFunc(_, message: Message):
     await asyncio.sleep(1)
     await message.chat.unban_member(user_id)
     if message.command[0][0] == "s":
-    if message.reply_to_message:  # Ensure reply_to_message exists before trying to delete it
+        if message.reply_to_message:  # Ensure reply_to_message exists before trying to delete it
         await message.reply_to_message.delete()
     await app.delete_user_history(message.chat.id, user_id)
