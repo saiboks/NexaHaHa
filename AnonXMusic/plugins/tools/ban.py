@@ -1,3 +1,36 @@
+import asyncio
+from contextlib import suppress
+
+from pyrogram import filters
+from pyrogram.enums import ChatMembersFilter, ChatMemberStatus, ChatType
+from pyrogram.types import (
+    CallbackQuery,
+    ChatPermissions,
+    ChatPrivileges,
+    Message,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
+from string import ascii_lowercase
+from typing import Dict, Union
+
+from AnonXMusic import app
+from AnonXMusic.misc import SUDOERS
+from AnonXMusic.core.mongo import mongodb
+from AnonXMusic.utils.error import capture_err
+from AnonXMusic.utils.keyboard import ikb
+from AnonXMusic.utils.database import save_filter
+from AnonXMusic.utils.functions import (
+    extract_user,
+    extract_user_and_reason,
+    time_converter,
+)
+from AnonXMusic.utils.permissions import adminsOnly, member_permissions
+from config import BANNED_USERS
+
+warnsdb = mongodb.warns
+
+# kick
 @app.on_message(filters.command(["kick", "skick"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def kickFunc(_, message: Message):
