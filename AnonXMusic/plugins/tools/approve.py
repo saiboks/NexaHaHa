@@ -1,25 +1,13 @@
-from pyrogram import filters
-from pyrogram.enums import ChatMembersFilter
-from pyrogram.types import ChatJoinRequest
-from pyrogram.errors.exceptions.bad_request_400 import UserAlreadyParticipant
-from AnonXMusic import app
-from AnonXMusic.core.mongo import mongodb
-from AnonXMusic.misc import SUDOERS
-from AnonXMusic.utils.keyboard import ikb
-from utils.permissions import adminsOnly, member_permissions
-from pyrogram.errors import RPCError, ChatAdminRequired, UserNotParticipant
-from AnonXMusic.types import ChatPrivileges, Message
-from AnonXMusic.misc import SUDOERS
-from AnonXMusic.utils.database import get_assistant
-approvaldb = mongodb.autoapprove
+from pyrogram import filters, Client
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ChatJoinRequest, ChatPrivileges
+from pyrogram.errors import UserAlreadyParticipant
+from AnonXMusic.helpers.admins import adminsOnly  # Assuming this helper is present in your codebase
+from AnonXMusic.helpers.inline import ikb  # Assuming this helper is present in your codebase
+from AnonXMusic import app, SUDOERS  # Importing app instance and sudo users from AnonXMusic
 
-
-def smallcap(text):
-    trans_table = str.maketrans(
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-        "ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢABCDEFGHIJKLMNOPQRSTUVWXYZ0𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿",
-    )
-    return text.translate(trans_table)
+# Database imports
+from pymongo import MongoClient
+approvaldb = MongoClient("mongodb_uri").AnonXMusic.approval  # MongoDB collection
 
 
 @app.on_message(filters.command("autoapprove") & filters.group)
