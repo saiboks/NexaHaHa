@@ -43,7 +43,7 @@ async def banFunc(_, message: Message):
     if not user_id:
         command = message.command[0]
         return await message.reply_text(
-            f"ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
+            f"» ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
         )
 
     # Permission check agar user ko allow nahi hai toh custom message show karega
