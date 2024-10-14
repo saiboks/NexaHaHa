@@ -6,7 +6,7 @@ from AnonXMusic import app
 from AnonXMusic.core.mongo import mongodb
 from AnonXMusic.misc import SUDOERS
 from AnonXMusic.utils.keyboard import ikb
-from utils.permissions import adminsOnly, member_permissions
+from AnonXMusic.utils.permissions import adminsOnly, member_permissions
 from pyrogram.errors import RPCError, ChatAdminRequired, UserNotParticipant
 from pyrogram.types import ChatPrivileges, Message
 from AnonXMusic.misc import SUDOERS
