@@ -65,7 +65,7 @@ async def unauthorised(
         )
     else:
         text = (
-            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ {command} ᴏʀᴅᴇʀ."
+            f"ʏᴏᴜ <b>ᴅᴏɴ'ᴛ</b> ʜᴀᴠᴇ <b>ᴘᴇʀᴍɪssɪᴏɴ</b> ᴛᴏ ᴜsᴇ ᴀ <b>{command}</b> ᴏʀᴅᴇʀ."
         )
     
     try:
