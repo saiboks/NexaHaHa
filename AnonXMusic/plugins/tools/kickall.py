@@ -38,21 +38,21 @@ async def kick_all_func(_, message: Message):
     # Check if the user is the bot owner or the group owner
     chat_member = await app.get_chat_member(message.chat.id, user_id)
     if user_id not in SUDOERS and chat_member.status != ChatMemberStatus.OWNER:
-        return await message.reply_text("❌ Only the bot owner or the group owner can use this command.")
+        return await message.reply_text("ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴛᴏ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ. ᴏɴʟʏ ᴛʜᴇ ɢʀᴏᴜᴘ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs.")
 
     # Create inline keyboard for approval
     buttons = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("✅ Approve", callback_data="approve_kickall"),
-                InlineKeyboardButton("❌ Decline", callback_data="decline_kickall")
+                InlineKeyboardButton("ᴀᴘᴘʀᴏᴠᴇ", callback_data="approve_kickall"),
+                InlineKeyboardButton("ᴅᴇᴄʟɪɴᴇ", callback_data="decline_kickall")
             ]
         ]
     )
     
     # Send confirmation message with buttons
     await message.reply_text(
-        "⚠️ Are you sure you want to kick all members from this chat?",
+        "⚠️ ᴀʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴋɪᴄᴋ ᴀʟʟ ᴍᴇᴍʙᴇʀs ғʀᴏᴍ ᴛʜɪs ᴄʜᴀᴛ?",
         reply_markup=buttons
     )
 
@@ -64,11 +64,11 @@ async def handle_kickall_confirmation(client, callback_query: CallbackQuery):
 
     # Check if the user is the bot owner or the group owner
     if user_id not in SUDOERS and chat_member.status != ChatMemberStatus.OWNER:
-        await callback_query.answer("❌ Only the bot owner or the group owner can perform this action.", show_alert=True)
+        await callback_query.answer("❌ ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴛᴏ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ. ᴏɴʟʏ ᴛʜᴇ ɢʀᴏᴜᴘ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs.", show_alert=True)
         return
 
     if callback_query.data == "approve_kickall":
-        await callback_query.message.edit_text("✅ Kicking all members...")
+        await callback_query.message.edit_text("<b>ᴋɪᴄᴋɪɴɢ ᴀʟʟ ᴍᴇᴍʙᴇʀs . . .</b>")
         kicked_count = 0
         failed_count = 0
 
@@ -87,7 +87,7 @@ async def handle_kickall_confirmation(client, callback_query: CallbackQuery):
                 failed_count += 1
 
         await callback_query.message.edit_text(
-            f"✅ Successfully kicked {kicked_count} users.\n❌ Failed to kick {failed_count} users."
+            f"<b>sᴜᴄᴄᴇssғᴜʟʟʏ ᴋɪᴄᴋᴇᴅ <u>{kicked_count}</u> ᴜsᴇʀs\nғᴀɪʟᴇᴅ ᴛᴏ ᴋɪᴄᴋ <u>{failed_count}</u> ᴜsᴇʀs</b>"
         )
     elif callback_query.data == "decline_kickall":
-        await callback_query.message.edit_text("❌ Kickall operation cancelled.")
+        await callback_query.message.edit_text("<b>ᴋɪᴄᴋᴀʟʟ ᴏᴘᴇʀᴀᴛɪᴏɴ ᴄᴀɴᴄᴇʟʟᴇᴅ . . .</b>")
