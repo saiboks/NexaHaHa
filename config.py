@@ -38,7 +38,6 @@ UPSTREAM_REPO = getenv(
     "https://github.com/saiboks/NexaHaHa",
 )
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "master")
-GIT_TOKEN = getenv(
     GIT_TOKEN = getenv(
     "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", None
 )  # Fill this variable if your upstream repository is private
