@@ -56,16 +56,18 @@ async def unauthorised(
     message: Message, permission, subFunc2, bot_lacking_permission=False
 ):
     chatID = message.chat.id
+    command = message.text.split()[0]  # Extracting the command name
+
     if bot_lacking_permission:
         text = (
-            "I don't have the required permission to perform this action."
+            f"I don't have the required permission to perform this action."
             + f"\n**Permission:** __{permission}__"
         )
     else:
         text = (
-            "You don't have the required permission to perform this action."
-            + f"\n**Permission:** __{permission}__"
+            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ /{command} ᴏʀᴅᴇʀ."
         )
+    
     try:
         await message.reply_text(text)
     except ChatWriteForbidden:
