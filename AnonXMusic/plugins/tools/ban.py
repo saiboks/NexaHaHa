@@ -63,16 +63,17 @@ async def kickFunc(_, message: Message):
     # Unban the user to allow them to join back later
     await asyncio.sleep(1)
     await message.chat.unban_member(user_id)
-    
-    # Delete the command message and related replies (if applicable)
-    await message.delete()
-    if message.reply_to_message:
-        await message.reply_to_message.delete()
-    
-    # Optionally delete the kick notification after a few seconds (clean up)
-    await asyncio.sleep(5)
-    await kick_message.delete()
 
-    # Delete user history if 's' command was used
-    if message.command[0][0] == "s":
+    # Check if command used is 'skick'
+    if message.command[0] == "skick":
+        # Delete the command message and related replies
+        await message.delete()
+        if message.reply_to_message:
+            await message.reply_to_message.delete()
+
+        # Optionally delete the kick notification after a few seconds (clean up)
+        await asyncio.sleep(5)
+        await kick_message.delete()
+
+        # Delete user history
         await app.delete_user_history(message.chat.id, user_id)
