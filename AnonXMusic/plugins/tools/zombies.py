@@ -8,7 +8,7 @@ from pyrogram.errors import FloodWait
 from AnonXMusic import app
 
 
-@app.on_message(filters.command(["zombies","clean"], "."))
+@app.on_message(filters.command(["zombies","clean","deluser"], ".", "!", "/", ","))
 async def remove(client, message):
   global stopProcess
   try: 
