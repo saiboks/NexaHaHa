@@ -30,26 +30,55 @@ from config import BANNED_USERS
 
 warnsdb = mongodb.warns
 
-# kickall
+# kickall with approve/decline buttons
 @app.on_message(filters.command("kickall") & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def kick_all_func(_, message: Message):
-    kicked_count = 0
-    failed_count = 0
+    # Create inline keyboard for approval
+    buttons = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("✅ Approve", callback_data="approve_kickall"),
+                InlineKeyboardButton("❌ Decline", callback_data="decline_kickall")
+            ]
+        ]
+    )
+    
+    # Send confirmation message with buttons
+    await message.reply_text(
+        "⚠️ Are you sure you want to kick all members from this chat?",
+        reply_markup=buttons
+    )
 
-    async for member in app.get_chat_members(message.chat.id):
-        user_id = member.user.id
-        # Skip if user is the bot itself, an admin, or a SUDOER
-        if user_id == app.id or user_id in SUDOERS or member.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
-            continue
-        
-        try:
-            mention = (await app.get_users(user_id)).mention
-            await message.chat.ban_member(user_id)
-            await asyncio.sleep(0.5)  # Add small delay to avoid flood limits
-            await message.chat.unban_member(user_id)
-            kicked_count += 1
-        except Exception:
-            failed_count += 1
+# Callback query handler for approve/decline
+@app.on_callback_query(filters.regex("^(approve_kickall|decline_kickall)$"))
+async def handle_kickall_confirmation(client, callback_query: CallbackQuery):
+    if callback_query.data == "approve_kickall":
+        await callback_query.message.edit_text("✅ Kicking all members...")
+        kicked_count = 0
+        failed_count = 0
 
-    await message.reply_text(f"✅ Successfully kicked {kicked_count} users.\n❌ Failed to kick {failed_count} users.")
+        async for member in app.get_chat_members(callback_query.message.chat.id):
+            user_id = member.user.id
+            # Skip if user is the bot itself, an admin, or a SUDOER
+            if user_id == app.id or user_id in SUDOERS or member.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
+                continue
+            
+            try:
+                await callback_query.message.chat.ban_member(user_id)
+                await asyncio.sleep(0.5)  # Add small delay to avoid flood limits
+                await callback_query.message.chat.unban_member(user_id)
+                kicked_count += 1
+            except Exception:
+                failed_count += 1
+
+        await callback_query.message.edit_text(
+            f"✅ Successfully kicked {kicked_count} users.\n❌ Failed to kick {failed_count} users."
+        )
+    elif callback_query.data == "decline_kickall":
+        await callback_query.message.edit_text("❌ Kickall operation cancelled.")
+
+# Ensure only admins can press the button
+@app.on_callback_query(filters.regex("^(approve_kickall|decline_kickall)$") & ~filters.user(SUDOERS))
+async def unauthorized_callback(_, callback_query: CallbackQuery):
+    await callback_query.answer("❌ You are not authorized to perform this action.", show_alert=True)
