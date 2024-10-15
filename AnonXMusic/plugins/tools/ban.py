@@ -235,4 +235,59 @@ async def kickFunc(_, message: Message):
     await message.chat.unban_member(user_id)
 
 
-# ------------------------------------------------------------------------------- #
+
+# purge
+@app.on_message(filters.command("purge") & ~filters.private)
+@adminsOnly("can_delete_messages")
+async def purgeFunc(_, message: Message):
+    repliedmsg = message.reply_to_message
+    await message.delete()
+
+    if not repliedmsg:
+        return await message.reply_text("Reply to a message to purge from.")
+
+    cmd = message.command
+    if len(cmd) > 1 and cmd[1].isdigit():
+        purge_to = repliedmsg.id + int(cmd[1])
+        if purge_to > message.id:
+            purge_to = message.id
+    else:
+        purge_to = message.id
+
+    chat_id = message.chat.id
+    message_ids = []
+
+    for message_id in range(
+        repliedmsg.id,
+        purge_to,
+    ):
+        message_ids.append(message_id)
+
+        # Max message deletion limit is 100
+        if len(message_ids) == 100:
+            await app.delete_messages(
+                chat_id=chat_id,
+                message_ids=message_ids,
+                revoke=True,  # For both sides
+            )
+
+            # To delete more than 100 messages, start again
+            message_ids = []
+
+    # Delete if any messages left
+    if len(message_ids) > 0:
+        await app.delete_messages(
+            chat_id=chat_id,
+            message_ids=message_ids,
+            revoke=True,
+        )
+
+
+# del
+@app.on_message(filters.command("del") & ~filters.private)
+@adminsOnly("can_delete_messages")
+async def deleteFunc(_, message: Message):
+    if not message.reply_to_message:
+        return await message.reply_text("Reply To A Message To Delete It")
+    await message.reply_to_message.delete()
+    await message.delete()
