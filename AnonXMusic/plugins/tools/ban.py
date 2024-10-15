@@ -72,7 +72,7 @@ async def banFunc(_, message: Message):
         f"<b>● ʙᴀɴɴᴇᴅ ʙʏ ➠</b> {message.from_user.mention if message.from_user else 'Anon'}\n"
     )
     if reason:
-        msg += f"<b>ʀᴇᴀsᴏɴ ➠</b> {reason}"
+        msg += f"<b>● ʀᴇᴀsᴏɴ ➠</b> {reason}"
     await message.chat.ban_member(user_id)
     replied_message = message.reply_to_message
     if replied_message:
