@@ -130,3 +130,29 @@ async def banFunc(_, message: Message):
 
     # Delete the command message after processing
     await message.delete()
+
+
+
+# unban 
+@app.on_message(filters.command("unban") & ~filters.private & ~BANNED_USERS)
+@adminsOnly("can_restrict_members")
+async def unban_func(_, message: Message):
+    reply = message.reply_to_message
+    user_id = await extract_user(message)
+
+    # Check if user ID is found, otherwise return custom message
+    if not user_id:
+        return await message.reply_text(
+            "<b><u>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</b></u>\n"
+            "ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/unban</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
+        )
+
+    if reply and reply.sender_chat and reply.sender_chat != message.chat.id:
+        return await message.reply_text("You cannot unban a channel")
+
+    await message.chat.unban_member(user_id)
+    umention = (await app.get_users(user_id)).mention
+    replied_message = message.reply_to_message
+    if replied_message:
+        message = replied_message
+    await message.reply_text(f"Unbanned! {umention}")
