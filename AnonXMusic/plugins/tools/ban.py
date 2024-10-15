@@ -91,7 +91,7 @@ async def banFunc(_, message: Message):
     if not user_id:
         return await message.reply_text(
             "<b><u>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\n"
-            "ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/ban</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
+            "ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/sban</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
         )
     if user_id == app.id:
         return await message.reply_text("I can't ban myself, i can leave if you want.")
