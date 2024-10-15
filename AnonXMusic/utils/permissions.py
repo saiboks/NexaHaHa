@@ -5,8 +5,8 @@ from traceback import format_exc as err
 from pyrogram.errors.exceptions.forbidden_403 import ChatWriteForbidden
 from pyrogram.types import Message
 
-from VIPMUSIC import app
-from VIPMUSIC.misc import SUDOERS
+from AnonXMusic import app
+from AnonXMusic.misc import SUDOERS
 
 
 async def member_permissions(chat_id: int, user_id: int):
@@ -59,12 +59,12 @@ async def unauthorised(
     if bot_lacking_permission:
         text = (
             "I don't have the required permission to perform this action."
-            + f"\n**Permission:** __{permission}__"
+            + f"\n<b>Permission:</b> {permission}"
         )
     else:
         text = (
             "You don't have the required permission to perform this action."
-            + f"\n**Permission:** __{permission}__"
+            + f"\n<b>Permission:</b> {permission}"
         )
     try:
         await message.reply_text(text)
