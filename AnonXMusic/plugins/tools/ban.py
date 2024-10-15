@@ -39,25 +39,15 @@ warnsdb = mongodb.warns
 async def banFunc(_, message: Message):
     user_id, reason = await extract_user_and_reason(message, sender_chat=True)
 
-    # Agar user ID ya reply nahi mila toh error message dikhaye
     if not user_id:
-        command = message.command[0]
         return await message.reply_text(
-            f"<b><u>» ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/{command}</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ</b> ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
+            "ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.\n"
+            "ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /ban ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
         )
-
-    # Permission check agar user ko allow nahi hai toh custom message show karega
-    if not await member_permissions(message):
-        command = message.command[0]
-        return await message.reply_text(
-            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ /{command} ᴏʀᴅᴇʀ."
-        )
-
-    # Rest of the ban logic
     if user_id == app.id:
-        return await message.reply_text("I can't ban myself, I can leave if you want.")
+        return await message.reply_text("I can't ban myself, i can leave if you want.")
     if user_id in SUDOERS:
-        return await message.reply_text("You Wanna Ban The Elevated One? RECONSIDER!")
+        return await message.reply_text("You Wanna Ban The Elevated One?, RECONSIDER!")
     if user_id in [
         member.user.id
         async for member in app.get_chat_members(
@@ -65,7 +55,7 @@ async def banFunc(_, message: Message):
         )
     ]:
         return await message.reply_text(
-            "I can't ban an admin, You know the rules, so do I."
+            "I can't ban an admin, You know the rules, so do i."
         )
 
     try:
@@ -78,13 +68,11 @@ async def banFunc(_, message: Message):
         )
 
     msg = (
-        f"**Banned User:** {mention}\n"
-        f"**Banned By:** {message.from_user.mention if message.from_user else 'Anon'}\n"
+        f"<b>● ʙᴀɴɴᴇᴅ ᴜsᴇʀ ➠</b> {mention}\n"
+        f"<b>● ʙᴀɴɴᴇᴅ ʙʏ ➠</b> {message.from_user.mention if message.from_user else 'Anon'}\n"
     )
-
     if reason:
-        msg += f"**Reason:** {reason}"
-
+        msg += f"<b>ʀᴇᴀsᴏɴ ➠</b> {reason}"
     await message.chat.ban_member(user_id)
     replied_message = message.reply_to_message
     if replied_message:
