@@ -33,27 +33,14 @@ warnsdb = mongodb.warns
 
 # ban
 @app.on_message(
-    filters.command(["ban"]) & ~filters.private & ~BANNED_USERS
+    filters.command(["ban", "sban", "tban"]) & ~filters.private & ~BANNED_USERS
 )
 @adminsOnly("can_restrict_members")
 async def banFunc(_, message: Message):
     user_id, reason = await extract_user_and_reason(message, sender_chat=True)
 
-    # Agar user ID ya reply nahi mila toh error message dikhaye
     if not user_id:
-        command = message.command[0]
-        return await message.reply_text(
-            f"ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
-        )
-
-    # Permission check agar user ko allow nahi hai toh custom message show karega
-    if not await member_permissions(message):
-        command = message.command[0]
-        return await message.reply_text(
-            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ /{command} ᴏʀᴅᴇʀ."
-        )
-
-    # Rest of the ban logic
+        return await message.reply_text("I can't find that user.")
     if user_id == app.id:
         return await message.reply_text("I can't ban myself, i can leave if you want.")
     if user_id in SUDOERS:
@@ -81,74 +68,30 @@ async def banFunc(_, message: Message):
         f"**Banned User:** {mention}\n"
         f"**Banned By:** {message.from_user.mention if message.from_user else 'Anon'}\n"
     )
-    
+    if message.command[0][0] == "s":
+        await message.reply_to_message.delete()
+        await app.delete_user_history(message.chat.id, user_id)
+    if message.command[0] == "tban":
+        split = reason.split(None, 1)
+        time_value = split[0]
+        temp_reason = split[1] if len(split) > 1 else ""
+        temp_ban = await time_converter(message, time_value)
+        msg += f"**Banned For:** {time_value}\n"
+        if temp_reason:
+            msg += f"**Reason:** {temp_reason}"
+        with suppress(AttributeError):
+            if len(time_value[:-1]) < 3:
+                await message.chat.ban_member(user_id, until_date=temp_ban)
+                replied_message = message.reply_to_message
+                if replied_message:
+                    message = replied_message
+                await message.reply_text(msg)
+            else:
+                await message.reply_text("You can't use more than 99")
+        return
     if reason:
         msg += f"**Reason:** {reason}"
-    
     await message.chat.ban_member(user_id)
-    replied_message = message.reply_to_message
-    if replied_message:
-        message = replied_message
-    await message.reply_text(msg)
-
-
-# sban
-@app.on_message(
-    filters.command(["sban"]) & ~filters.private & ~BANNED_USERS
-)
-@adminsOnly("can_restrict_members")
-async def banFunc(_, message: Message):
-    user_id, reason = await extract_user_and_reason(message, sender_chat=True)
-
-    # Agar user ID ya reply nahi mila toh error message dikhaye
-    if not user_id:
-        command = message.command[0]
-        return await message.reply_text(
-            f"<b><u>» ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/{command}</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ</b> ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
-        )
-
-    # Permission check ke liye user_id pass karna zaruri hai
-    if not await member_permissions(message.from_user.id):
-        command = message.command[0]
-        return await message.reply_text(
-            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ /{command} ᴏʀᴅᴇʀ."
-        )
-
-    # Rest of the ban logic
-    if user_id == app.id:
-        return await message.reply_text("I can't ban myself, I can leave if you want.")
-    if user_id in SUDOERS:
-        return await message.reply_text("You Wanna Ban The Elevated One? RECONSIDER!")
-    if user_id in [
-        member.user.id
-        async for member in app.get_chat_members(
-            chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
-        )
-    ]:
-        return await message.reply_text(
-            "I can't ban an admin, You know the rules, so do I."
-        )
-
-    try:
-        mention = (await app.get_users(user_id)).mention
-    except IndexError:
-        mention = (
-            message.reply_to_message.sender_chat.title
-            if message.reply_to_message
-            else "Anon"
-        )
-
-    # Ban karne wale ka mention remove kar diya gaya hai
-    msg = f"**Banned User:** {mention}\n"
-
-    if reason:
-        msg += f"**Reason:** {reason}"
-
-    await message.chat.ban_member(user_id)
-    
-    # Ban command message delete karna
-    await message.delete()
-
     replied_message = message.reply_to_message
     if replied_message:
         message = replied_message
