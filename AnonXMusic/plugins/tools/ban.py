@@ -32,22 +32,28 @@ warnsdb = mongodb.warns
 
 
 # ban
-from AnonXMusic.utils.permissions import adminsOnly, member_permissions
-
-# Error message for unauthorized users
 @app.on_message(
     filters.command(["ban"]) & ~filters.private & ~BANNED_USERS
 )
-@adminsOnly("can_restrict_members", error_message="ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ /ʙᴀɴ ᴏʀᴅᴇʀ.")
+@adminsOnly("can_restrict_members")
 async def banFunc(_, message: Message):
     user_id, reason = await extract_user_and_reason(message, sender_chat=True)
 
+    # Agar user ID ya reply nahi mila toh error message dikhaye
     if not user_id:
         command = message.command[0]
         return await message.reply_text(
             f"ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.\nᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ /{command} ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
         )
 
+    # Permission check agar user ko allow nahi hai toh custom message show karega
+    if not await member_permissions(message):
+        command = message.command[0]
+        return await message.reply_text(
+            f"ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴘᴇʀᴍɪssɪᴏɴ ᴛᴏ ᴜsᴇ ᴀ /{command} ᴏʀᴅᴇʀ."
+        )
+
+    # Rest of the ban logic
     if user_id == app.id:
         return await message.reply_text("I can't ban myself, i can leave if you want.")
     if user_id in SUDOERS:
