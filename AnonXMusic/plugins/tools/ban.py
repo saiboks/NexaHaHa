@@ -315,3 +315,38 @@ async def pin(_, message: Message):
     msg = "Please check the pinned message: ~ " + f"[Check, {r.link}]"
     filter_ = dict(type="text", data=msg)
     await save_filter(message.chat.id, "~pinned", filter_)
+
+
+
+# warn
+@app.on_message(filters.command("warn") & ~filters.private & ~BANNED_USERS)
+@adminsOnly("can_restrict_members")
+async def warn_user(_, message: Message):
+    user_id, reason = await extract_user_and_reason(message)
+    chat_id = message.chat.id
+    command = message.command[0]  # Get the command name
+
+    if not user_id:
+        return await message.reply_text(
+            f"<b><u>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</b></u>\n"
+            f"ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/{command}</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
+        )
+
+    # Rest of the warn logic
+    if user_id == app.id:
+        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏsᴇʟғ, ɪ ᴄᴀɴ ʟᴇᴀᴠᴇ ɪғ ʏᴏᴜ ᴡᴀɴᴛ.")
+    if user_id in SUDOERS:
+        return await message.reply_text(
+            "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏ ᴍᴀɴᴀɢᴇʀ's, ʙᴇᴄᴀᴜsᴇ ʜᴇ ᴍᴀɴᴀɢᴇs ᴍᴇ!"
+        )
+    if user_id in [
+        member.user.id
+        async for member in app.get_chat_members(
+            chat_id=message.chat.id, filter=ChatMembersFilter.ADMINISTRATORS
+        )
+    ]:
+        return await message.reply_text(
+            "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs sᴏ ᴅᴏ ɪ."
+        )
+    
+    # Continue with the rest of the warn functionality...
