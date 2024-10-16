@@ -377,25 +377,18 @@ async def pin(_, message: Message):
 
 
 # warn
-@app.on_message(filters.command("warn") & ~filters.private & ~BANNED_USERS)
+@app.on_message(filters.command(["warn"]) & ~filters.private & ~BANNED_USERS)
 @adminsOnly("can_restrict_members")
 async def warn_user(_, message: Message):
     user_id, reason = await extract_user_and_reason(message)
     chat_id = message.chat.id
-    command = message.command[0]  # Get the command name
-
     if not user_id:
-        return await message.reply_text(
-            f"<b><u>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</b></u>\n"
-            f"ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/{command}</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
-        )
-
-    # Rest of the warn logic
+        return await message.reply_text("ɪ ᴄᴀɴᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ")
     if user_id == app.id:
         return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏsᴇʟғ, ɪ ᴄᴀɴ ʟᴇᴀᴠᴇ ɪғ ʏᴏᴜ ᴡᴀɴᴛ.")
     if user_id in SUDOERS:
         return await message.reply_text(
-            "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏ ᴍᴀɴᴀɢᴇʀ's, ʙᴇᴄᴀᴜsᴇ ʜᴇ ᴍᴀɴᴀɢᴇs ᴍᴇ!"
+            "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴍʏ ᴍᴀɴᴀɢᴇʀ's, ʙᴇᴄᴀᴜsᴇ ʜᴇ ᴍᴀɴᴀɢᴇ ᴍᴇ!"
         )
     if user_id in [
         member.user.id
@@ -406,5 +399,88 @@ async def warn_user(_, message: Message):
         return await message.reply_text(
             "ɪ ᴄᴀɴ'ᴛ ᴡᴀʀɴ ᴀɴ ᴀᴅᴍɪɴ, ʏᴏᴜ ᴋɴᴏᴡ ᴛʜᴇ ʀᴜʟᴇs sᴏ ᴅᴏ ɪ."
         )
-    
-    # Continue with the rest of the warn functionality...
+    user, warns = await asyncio.gather(
+        app.get_users(user_id),
+        get_warn(chat_id, await int_to_alpha(user_id)),
+    )
+    mention = user.mention
+    keyboard = ikb({"ʀ-ᴡᴀʀɴ": f"unwarn_{user_id}"})
+    if warns:
+        warns = warns["warns"]
+    else:
+        warns = 0
+    if warns >= 2:
+        await message.chat.ban_member(user_id)
+        await message.reply_text(f"ɴᴜᴍʙᴇʀ ᴏғ ᴡᴀʀɴs ᴏғ {mention} ᴇxᴄᴇᴇᴅᴇᴅ, ʙᴀɴɴᴇᴅ!")
+        await remove_warns(chat_id, await int_to_alpha(user_id))
+    else:
+        warn = {"warns": warns + 1}
+        msg = f"""
+**ᴡᴀʀɴᴇᴅ ᴜsᴇʀ:** {mention}
+**ᴡᴀʀɴᴇᴅ ʙʏ:** {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
+**ʀᴇᴀsᴏɴ :** {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠᴏᴅᴇᴅ'}
+**ᴡᴀʀɴs:** {warns + 1}/3"""
+        replied_message = message.reply_to_message
+        if replied_message:
+            message = replied_message
+        await message.reply_text(msg, reply_markup=keyboard)
+        await add_warn(chat_id, await int_to_alpha(user_id), warn)
+
+
+@app.on_callback_query(filters.regex("unwarn_") & ~BANNED_USERS)
+async def remove_warning(_, cq: CallbackQuery):
+    from_user = cq.from_user
+    chat_id = cq.message.chat.id
+    permissions = await member_permissions(chat_id, from_user.id)
+    permission = "can_restrict_members"
+    if permission not in permissions:
+        return await cq.answer(
+            "ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴇɴᴏᴜɢʜ ᴘᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘᴇʀғᴏʀᴍ ᴛʜɪs ᴀᴄᴛɪᴏɴ\n"
+            + f"ᴘᴇʀᴍɪssɪᴏɴ ɴᴇᴇᴅᴇᴅ: {permission}",
+            show_alert=True,
+        )
+    user_id = cq.data.split("_")[1]
+    warns = await get_warn(chat_id, await int_to_alpha(user_id))
+    if warns:
+        warns = warns["warns"]
+    if not warns or warns == 0:
+        return await cq.answer("ᴜsᴇʀ ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
+    warn = {"warns": warns - 1}
+    await add_warn(chat_id, await int_to_alpha(user_id), warn)
+    text = cq.message.text.markdown
+    text = f"~~{text}~~\n\n"
+    text += f"__ᴡᴀʀɴ ʀᴇᴍᴏᴠᴇᴅ ʙʏ {from_user.mention}__"
+    await cq.message.edit(text)
+
+
+@app.on_message(filters.command("rmwarns") & ~filters.private & ~BANNED_USERS)
+@adminsOnly("can_restrict_members")
+async def remove_warnings(_, message: Message):
+    user_id = await extract_user(message)
+    if not user_id:
+        return await message.reply_text("I can't find that user.")
+    mention = (await app.get_users(user_id)).mention
+    chat_id = message.chat.id
+    warns = await get_warn(chat_id, await int_to_alpha(user_id))
+    if warns:
+        warns = warns["warns"]
+    if warns == 0 or not warns:
+        await message.reply_text(f"{mention} ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
+    else:
+        await remove_warns(chat_id, await int_to_alpha(user_id))
+        await message.reply_text(f"ʀᴇᴍᴏᴠᴇᴅ ᴡᴀʀɴɪɴɢs ᴏғ {mention}.")
+
+
+@app.on_message(filters.command("warns") & ~filters.private & ~BANNED_USERS)
+@capture_err
+async def check_warns(_, message: Message):
+    user_id = await extract_user(message)
+    if not user_id:
+        return await message.reply_text("ɪ ᴄᴀɴ'ᴛ ғɪɴᴅ ᴛʜᴀᴛ ᴜsᴇʀ.")
+    warns = await get_warn(message.chat.id, await int_to_alpha(user_id))
+    mention = (await app.get_users(user_id)).mention
+    if warns:
+        warns = warns["warns"]
+    else:
+        return await message.reply_text(f"{mention} ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
+    return await message.reply_text(f"{mention} ʜᴀs {warns}/3 ᴡᴀʀɴɪɴɢs")
