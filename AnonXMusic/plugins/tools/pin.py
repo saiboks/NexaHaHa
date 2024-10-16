@@ -34,23 +34,23 @@ async def save_filter(chat_id: int, name: str, _filter: dict):
 async def pin(_, message: Message):
     if not message.reply_to_message:
         return await message.reply_text("Reply to a message to pin/unpin it.")
-    
+
     r = message.reply_to_message
     if message.command[0][0] == "u":  # For "unpin"
         await r.unpin()
         return await message.reply_text(
-            f"Unpinned [this]({r.link}) message.",
+            f"Unpinned [this](t.me/c/{r.chat.id}/{r.message_id}) message.",
             disable_web_page_preview=True,
         )
-    
+
     # For "pin"
     await r.pin(disable_notification=True)
     await message.reply_text(
-    f"Pinned [this](t.me/c/{r.chat.id}/{r.message_id}) message.",
-    disable_web_page_preview=True,
-)
-    
+        f"Pinned [this](t.me/c/{r.chat.id}/{r.message_id}) message.",
+        disable_web_page_preview=True,
+    )
+
     # Save the pin as a filter
-    msg = "Please check the pinned message: ~ " + f"[Check, {r.link}]"
+    msg = "Please check the pinned message: ~ " + f"[Check, t.me/c/{r.chat.id}/{r.message_id}]"
     filter_ = dict(type="text", data=msg)
     await save_filter(message.chat.id, "~pinned", filter_)
