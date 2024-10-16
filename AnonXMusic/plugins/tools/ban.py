@@ -19,7 +19,6 @@ from AnonXMusic.misc import SUDOERS
 from AnonXMusic.core.mongo import mongodb
 from AnonXMusic.utils.error import capture_err
 from AnonXMusic.utils.keyboard import ikb
-from AnonXMusic.utils.database import save_filter
 from AnonXMusic.utils.functions import (
     extract_user,
     extract_user_and_reason,
@@ -86,6 +85,18 @@ async def remove_warns(chat_id: int, name: str) -> bool:
         )
         return True
     return False
+
+
+
+async def save_filter(chat_id: int, name: str, _filter: dict):
+    name = name.lower().strip()
+    _filters = await _get_filters(chat_id)
+    _filters[name] = _filter
+    await filtersdb.update_one(
+        {"chat_id": chat_id},
+        {"$set": {"filters": _filters}},
+        upsert=True,
+    )
 
 
 
