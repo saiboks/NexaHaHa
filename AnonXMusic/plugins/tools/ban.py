@@ -408,23 +408,30 @@ async def remove_warning(_, cq: CallbackQuery):
     chat_id = cq.message.chat.id
     permissions = await member_permissions(chat_id, from_user.id)
     permission = "can_restrict_members"
+    
     if permission not in permissions:
         return await cq.answer(
             "ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴇɴᴏᴜɢʜ ᴘᴇʀᴍɪssɪᴏɴs ᴛᴏ ᴘᴇʀғᴏʀᴍ ᴛʜɪs ᴀᴄᴛɪᴏɴ\n"
             + f"ᴘᴇʀᴍɪssɪᴏɴ ɴᴇᴇᴅᴇᴅ: {permission}",
             show_alert=True,
         )
+    
     user_id = cq.data.split("_")[1]
     warns = await get_warn(chat_id, await int_to_alpha(user_id))
+    
     if warns:
         warns = warns["warns"]
+    
     if not warns or warns == 0:
         return await cq.answer("ᴜsᴇʀ ʜᴀs ɴᴏ ᴡᴀʀɴɪɴɢs.")
+    
     warn = {"warns": warns - 1}
     await add_warn(chat_id, await int_to_alpha(user_id), warn)
-    text = cq.message.text.markdown
+    
+    text = cq.message.text  # Corrected this line
     text = f"~~{text}~~\n\n"
     text += f"__ᴡᴀʀɴ ʀᴇᴍᴏᴠᴇᴅ ʙʏ {from_user.mention}__"
+    
     await cq.message.edit(text)
 
 
