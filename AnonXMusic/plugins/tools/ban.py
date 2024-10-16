@@ -372,7 +372,7 @@ async def pin(_, message: Message):
     )
     msg = "Please check the pinned message: ~ " + f"[Check, {r.link}]"
     filter_ = dict(type="text", data=msg)
-    await save_filter(message.chat.id, "~pinned", filter)
+    await save_filter(message.chat.id, "~pinned", filter_)
 
 
 
