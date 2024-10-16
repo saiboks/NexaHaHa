@@ -379,7 +379,7 @@ async def warn_user(_, message: Message):
         get_warn(chat_id, await int_to_alpha(user_id)),
     )
     mention = user.mention
-    keyboard = ikb({"ʀ-ᴡᴀʀɴ": f"unwarn_{user_id}"})
+    keyboard = ikb({"ᴡᴀʀɴ -": f"unwarn_{user_id}"})
     if warns:
         warns = warns["warns"]
     else:
@@ -391,10 +391,10 @@ async def warn_user(_, message: Message):
     else:
         warn = {"warns": warns + 1}
         msg = f"""
-**ᴡᴀʀɴᴇᴅ ᴜsᴇʀ:** {mention}
-**ᴡᴀʀɴᴇᴅ ʙʏ:** {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
-**ʀᴇᴀsᴏɴ :** {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠᴏᴅᴇᴅ'}
-**ᴡᴀʀɴs:** {warns + 1}/3"""
+<b>● ᴡᴀʀɴᴇᴅ ᴜsᴇʀ ➠</b> {mention}
+<b>● ᴡᴀʀɴᴇᴅ ʙʏ ➠</b> {message.from_user.mention if message.from_user else 'ᴀɴᴏɴᴍᴏᴜs'}
+<b>● ʀᴇᴀsᴏɴ ➠</b> {reason or 'ɴᴏ ʀᴇᴀsᴏɴ ᴘʀᴏᴠᴏᴅᴇᴅ'}
+<b>ᴡᴀʀɴs ➠</b> {warns + 1}/3"""
         replied_message = message.reply_to_message
         if replied_message:
             message = replied_message
