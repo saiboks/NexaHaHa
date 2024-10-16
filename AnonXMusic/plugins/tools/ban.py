@@ -88,18 +88,6 @@ async def remove_warns(chat_id: int, name: str) -> bool:
 
 
 
-async def save_filter(chat_id: int, name: str, _filter: dict):
-    name = name.lower().strip()
-    _filters = await _get_filters(chat_id)
-    _filters[name] = _filter
-    await filtersdb.update_one(
-        {"chat_id": chat_id},
-        {"$set": {"filters": _filters}},
-        upsert=True,
-    )
-
-
-
 # ban
 @app.on_message(
     filters.command(["ban"]) & ~filters.private & ~BANNED_USERS
@@ -360,30 +348,6 @@ async def deleteFunc(_, message: Message):
         return await message.reply_text("Reply To A Message To Delete It")
     await message.reply_to_message.delete()
     await message.delete()
-
-
-
-# pin/unpin
-@app.on_message(filters.command(["pin", "unpin"]) & ~filters.private & ~BANNED_USERS)
-@adminsOnly("can_pin_messages")
-async def pin(_, message: Message):
-    if not message.reply_to_message:
-        return await message.reply_text("Reply to a message to pin/unpin it.")
-    r = message.reply_to_message
-    if message.command[0][0] == "u":
-        await r.unpin()
-        return await message.reply_text(
-            f"Unpinned [this]({r.link}) message.",
-            disable_web_page_preview=True,
-        )
-    await r.pin(disable_notification=True)
-    await message.reply(
-        f"Pinned [this]({r.link}) message.",
-        disable_web_page_preview=True,
-    )
-    msg = "Please check the pinned message: ~ " + f"[Check, {r.link}]"
-    filter_ = dict(type="text", data=msg)
-    await save_filter(message.chat.id, "~pinned", filter_)
 
 
 
