@@ -45,10 +45,10 @@ async def pin(_, message: Message):
     
     # For "pin"
     await r.pin(disable_notification=True)
-    await message.reply(
-        f"Pinned [this]({r.link}) message.",
-        disable_web_page_preview=True,
-    )
+    await message.reply_text(
+    f"Pinned [this](t.me/c/{r.chat.id}/{r.message_id}) message.",
+    disable_web_page_preview=True,
+)
     
     # Save the pin as a filter
     msg = "Please check the pinned message: ~ " + f"[Check, {r.link}]"
