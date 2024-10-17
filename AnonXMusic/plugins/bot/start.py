@@ -87,7 +87,7 @@ async def start_pm(client, message: Message, _):
         
         # Send start_2 as plain text without an image
         await message.reply_text(
-            text=_["start_2"].format(message.from_user.mention, app.mention),
+            text= "🍓 <b>Hello {0}<a href='https://envs.sh/ToH.jpg'>.</a> . .</b>".format(message.from_user.mention, app.mention),
         )
 
         # Send start_3 with reply_markup
