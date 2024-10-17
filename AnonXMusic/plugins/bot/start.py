@@ -84,17 +84,20 @@ async def start_pm(client, message: Message, _):
                 )
     else:
         out = private_panel(_)
-        
-        # Send start_2 as plain text without an image
-        await message.reply_text(
-            text= "🍓 <b>Hello {0}<a href='https://envs.sh/ToH.jpg'>.</a> . .</b>".format(message.from_user.mention, app.mention),
-        )
+        await message.reply_photo(
+            photo=config.START_IMG_URL,
+            caption=_["start_2"].format(message.from_user.mention, app.mention),
 
-        # Send start_3 with reply_markup
+
+        )  
+
+             # Ab start_3 caption ko reply_markup ke saath bhejo
         await message.reply_text(
-            text=_["start_3"].format(app.mention),  # second caption (start_3)
-            reply_markup=InlineKeyboardMarkup(out),  # with reply_markup
-        )
+            text=_["start_3"].format(app.mention),  # Dusra caption (start_3)
+            reply_markup=InlineKeyboardMarkup(out),  # reply_markup ke saath
+
+
+        )  
 
         if await is_on_off(2):
             return await app.send_message(
