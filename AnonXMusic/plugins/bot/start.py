@@ -133,7 +133,7 @@ async def welcome(client, message: Message):
                     return await app.leave_chat(message.chat.id)
 
                 out = start_panel(_)
-                caption = "ʜᴇʏ {0},\nᴛʜɪs ɪs {1}\n\nᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {2}, {3} ᴄᴀɴ ɴᴏᴡ ᴩʟᴀʏ sᴏɴɢs ɪɴ ᴛʜɪs ᴄʜᴀᴛ.".format(
+                text = "ʜᴇʏ {0},\nᴛʜɪs ɪs {1}\n\nᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {2}, {3} ᴄᴀɴ ɴᴏᴡ ᴩʟᴀʏ sᴏɴɢs ɪɴ ᴛʜɪs ᴄʜᴀᴛ.".format(
                     message.from_user.first_name,
                     app.mention,
                     message.chat.title,
@@ -141,7 +141,7 @@ async def welcome(client, message: Message):
                 )
 
                 await message.reply_text(
-                    caption=caption,
+                    text=text,
                     reply_markup=InlineKeyboardMarkup(out),
                 )
                 await add_served_chat(message.chat.id)
