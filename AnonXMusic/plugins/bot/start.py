@@ -146,7 +146,7 @@ async def welcome(client, message: Message):
                     return await app.leave_chat(message.chat.id)
 
                 out = start_panel(_)
-                await message.reply_photo(
+                await message.reply(
                     caption=_["start_4"].format(
                         message.from_user.first_name,
                         app.mention,
