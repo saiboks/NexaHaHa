@@ -132,11 +132,11 @@ async def welcome(client, message: Message):
                     pass
             if member.id == app.id:
                 if message.chat.type != ChatType.SUPERGROUP:
-                    await message.reply_text(_["start_5"])
+                    await message.reply_text(_["start_4"])
                     return await app.leave_chat(message.chat.id)
                 if message.chat.id in await blacklisted_chats():
                     await message.reply_text(
-                        _["start_6"].format(
+                        _["start_5"].format(
                             app.mention,
                             f"https://t.me/{app.username}?start=sudolist",
                             config.SUPPORT_CHAT,
@@ -147,15 +147,16 @@ async def welcome(client, message: Message):
 
                 out = start_panel(_)
                 await message.reply(
-                    caption=_["start_4"].format(
-                        message.from_user.first_name,
-                        app.mention,
-                        message.chat.title,
-                        app.mention,
-                    ),
-                    reply_markup=InlineKeyboardMarkup(out),
-                )
+    text=f"ʜᴇʏ {message.from_user.first_name},\nᴛʜɪs ɪs {app.mention}\n\nᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ ɪɴ {message.chat.title}, { app.mention} ᴄᴀɴ ɴᴏᴡ ᴩʟᴀʏ sᴏɴɢs ɪɴ ᴛʜɪs ᴄʜᴀᴛ.<a href='https://telegra.ph/file/8eaf615030d0af86dde19.mp4'> .</a>",
+    reply_markup=InlineKeyboardMarkup(out),
+)
+
                 await add_served_chat(message.chat.id)
+                await client.send_message(config.LOGGER_ID,
+    text=f"""ʙᴏᴛ ᴀᴅᴅᴇᴅ ɪɴ {message.chat.title}
+    {app.mention} ᴄᴀɴ ɴᴏᴡ ᴩʟᴀʏ sᴏɴɢs ɪɴ ᴛʜɪs ᴄʜᴀᴛ.-
+    ᴛʜᴀɴᴋs ғᴏʀ ᴀᴅᴅɪɴɢ ᴍᴇ """)
                 await message.stop_propagation()
+
         except Exception as ex:
             print(ex)
