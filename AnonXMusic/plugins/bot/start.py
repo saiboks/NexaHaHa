@@ -109,7 +109,7 @@ async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply(
-        text=_ "<b>⬤ {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
+        text= "<b>⬤ {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
     )
     return await add_served_chat(message.chat.id)
