@@ -59,7 +59,7 @@ async def start_pm(client, message: Message, _):
                 channel = result["channel"]["name"]
                 link = result["link"]
                 published = result["publishedTime"]
-            searched_text = _["start_6"].format(
+            searched_text = _["start_7"].format(
                 title, duration, views, published, channellink, channel, app.mention
             )
             key = InlineKeyboardMarkup(
@@ -122,11 +122,11 @@ async def welcome(client, message: Message):
                     pass
             if member.id == app.id:
                 if message.chat.type != ChatType.SUPERGROUP:
-                    await message.reply_text(_["start_4"])
+                    await message.reply_text(_["start_5"])
                     return await app.leave_chat(message.chat.id)
                 if message.chat.id in await blacklisted_chats():
                     await message.reply_text(
-                        _["start_5"].format(
+                        _["start_6"].format(
                             app.mention,
                             f"https://t.me/{app.username}?start=sudolist",
                             config.SUPPORT_CHAT,
@@ -138,7 +138,7 @@ async def welcome(client, message: Message):
                 out = start_panel(_)
                 await message.reply_photo(
                     photo=config.START_IMG_URL,
-                    caption=_["start_3"].format(
+                    caption=_["start_4"].format(
                         message.from_user.first_name,
                         app.mention,
                         message.chat.title,
