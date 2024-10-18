@@ -117,7 +117,7 @@ START_IMAGES = [
 # Function to get random image anchors
 def get_random_image_anchors(n=3):
     selected_images = random.sample(START_IMAGES, n)  # Select n random images
-    return " ".join([f"<a href='{img}'>.</a>" for img in selected_images])
+    return " ".join([f"<a href='{START_IMAGES}'>.</a>" for img in selected_images])
 
 # For group start command, we add random image anchor logic
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
