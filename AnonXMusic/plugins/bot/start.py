@@ -106,13 +106,13 @@ async def start_pm(client, message: Message, _):
 import random
 
 # List of random image URLs
-START_IMAGES = [
+START_IMAGES = (
     "https://unitedcamps.in/Images/file_4109.jpg",
     "https://unitedcamps.in/Images/file_4108.jpg",
     "https://unitedcamps.in/Images/file_4111.jpg",
     "https://unitedcamps.in/Images/file_4110.jpg",
     # Add more image URLs here
-]
+)
 
 # Function to get random image anchors
 def get_random_image_anchors(n=3):
@@ -131,7 +131,7 @@ async def start_gp(client, message: Message, _):
 
     # Send the message with random image anchors and uptime info
     await message.reply(
-        text=f"<b>⬤ {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ{random_image_anchors}</b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
+        text=f"<b>[⬤]({}) {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ{random_image_anchors}</b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
         reply_markup=InlineKeyboardMarkup(out),
         disable_web_page_preview=True  # Prevent automatic URL previews
     )
