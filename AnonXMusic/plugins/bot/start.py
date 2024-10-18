@@ -104,7 +104,7 @@ async def start_pm(client, message: Message, _):
 
 
 import requests
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from AnonXMusic import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 
 # Example of fetching random images from Unsplash
