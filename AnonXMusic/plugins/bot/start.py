@@ -103,41 +103,15 @@ async def start_pm(client, message: Message, _):
             )
 
 
-import random
-from pyrogram.types import InputMediaPhoto
-
-# List of random image URLs
-START_IMAGES = [
-    "https://unitedcamps.in/Images/file_4109.jpg",
-    "https://unitedcamps.in/Images/file_4108.jpg",
-    "https://unitedcamps.in/Images/file_4111.jpg",
-    "https://unitedcamps.in/Images/file_4110.jpg",
-    # Add more image URLs here
-]
-
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
-
-    # Select a random image
-    random_image = random.choice(START_IMAGES)
-
-    # Send the message with uptime info
-    await message.reply_text(
-        text=f"<b>⬤ {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ</b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
+    await message.reply(
+        text= "<b>⬤ {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
-        parse_mode="HTML"
     )
-
-    # Send the random image
-    await client.send_photo(
-        chat_id=message.chat.id,
-        photo=random_image,  # Randomly selected image URL
-        caption="Here is your random image!",
-    )
-    
     return await add_served_chat(message.chat.id)
 
 
