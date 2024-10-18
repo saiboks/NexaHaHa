@@ -103,15 +103,34 @@ async def start_pm(client, message: Message, _):
             )
 
 
+import requests
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+import random
+
+# Example of fetching random images from Unsplash
+def get_random_image():
+    image_urls = [
+        "https://unitedcamps.in/Images/file_4110.jpg",
+        "https://unitedcamps.in/Images/file_4111.jpg",
+        "https://unitedcamps.in/Images/file_4108.jpg",
+        "https://unitedcamps.in/Images/file_4109.jpg",
+    ]
+    return random.choice(image_urls)
+
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
-    await message.reply(
-        text= "<b>⬤ {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
+    
+    random_image_url = get_random_image()
+
+    await message.reply_photo(
+        photo=random_image_url,
+        caption="<b>⬤ {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
     )
+    
     return await add_served_chat(message.chat.id)
 
 
