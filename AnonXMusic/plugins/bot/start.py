@@ -106,23 +106,30 @@ async def start_pm(client, message: Message, _):
 import random
 
 # List of random image URLs
-START_IMAGES = (
+START_IMAGES = [
     "https://unitedcamps.in/Images/file_4109.jpg",
     "https://unitedcamps.in/Images/file_4108.jpg",
     "https://unitedcamps.in/Images/file_4111.jpg",
     "https://unitedcamps.in/Images/file_4110.jpg",
     # Add more image URLs here
-)
+]
 
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
+    
+    # Select a random image
+    random_image = random.choice(START_IMAGES)
+    
+    # Construct the message with random image and uptime
     await message.reply(
-        text= "<b>[⬤]({}) {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
+        text=f"<b>[⬤]({random_image}) {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
         reply_markup=InlineKeyboardMarkup(out),
+        parse_mode="HTML",  # Ensure HTML is parsed correctly
     )
+    
     return await add_served_chat(message.chat.id)
 
 
