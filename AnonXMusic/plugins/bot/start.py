@@ -105,7 +105,7 @@ async def start_pm(client, message: Message, _):
 
 import random
 
-# A list of random image URLs
+# List of random image URLs
 START_IMAGES = [
     "https://unitedcamps.in/Images/file_4109.jpg",
     "https://unitedcamps.in/Images/file_4108.jpg",
@@ -114,21 +114,26 @@ START_IMAGES = [
     # Add more image URLs here
 ]
 
-# For group start command, we add random image logic
+# Function to get random image anchors
+def get_random_image_anchors(n=3):
+    selected_images = random.sample(START_IMAGES, n)  # Select n random images
+    return " ".join([f"<a href='{img}'>.</a>" for img in selected_images])
+
+# For group start command, we add random image anchor logic
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     
-    # Select a random image from the START_IMAGES list
-    random_image = random.choice(START_IMAGES)
+    # Get multiple random image anchors (here 3 random images)
+    random_image_anchors = get_random_image_anchors(n=3)
 
-    # Send the message with the random image and uptime info
-    await message.reply_photo(
-        photo=random_image,  # Using random image here
-        caption="<b>⬤ {0} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {1}".format(app.mention, get_readable_time(uptime)),
+    # Send the message with random image anchors and uptime info
+    await message.reply(
+        text=f"<b>⬤ {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ{random_image_anchors}</b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
         reply_markup=InlineKeyboardMarkup(out),
+        disable_web_page_preview=True  # Prevent automatic URL previews
     )
     return await add_served_chat(message.chat.id)
 
