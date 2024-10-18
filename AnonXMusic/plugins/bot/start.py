@@ -104,6 +104,7 @@ async def start_pm(client, message: Message, _):
 
 
 import random
+from pyrogram.types import InputMediaPhoto
 
 # List of random image URLs
 START_IMAGES = [
@@ -119,16 +120,22 @@ START_IMAGES = [
 async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
-    
+
     # Select a random image
     random_image = random.choice(START_IMAGES)
-    
-    # Construct the message with random image and uptime
-    await message.reply(
-        text=f"<b>⬤ {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ</b> <a href='{random_image}'>.</a>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
+
+    # Send the message with uptime info
+    await message.reply_text(
+        text=f"<b>⬤ {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ</b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
         reply_markup=InlineKeyboardMarkup(out),
-        parse_mode="HTML",  # Ensure HTML is parsed correctly
-        disable_web_page_preview=True  # Disable automatic link preview
+        parse_mode="HTML"
+    )
+
+    # Send the random image
+    await client.send_photo(
+        chat_id=message.chat.id,
+        photo=random_image,  # Randomly selected image URL
+        caption="Here is your random image!",
     )
     
     return await add_served_chat(message.chat.id)
