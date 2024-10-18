@@ -125,9 +125,10 @@ async def start_gp(client, message: Message, _):
     
     # Construct the message with random image and uptime
     await message.reply(
-        text=f"<b>[⬤]({random_image}) {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ<a href='https://envs.sh/ToH.jpg'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
+        text=f"<b>⬤ {app.mention} ɪs ᴀʟɪᴠᴇ ʙᴀʙʏ <a href='{random_image}'>.</a></b>\n\n<b>⬤ ᴜᴘᴛɪᴍᴇ ➠</b> {get_readable_time(uptime)}",
         reply_markup=InlineKeyboardMarkup(out),
         parse_mode="HTML",  # Ensure HTML is parsed correctly
+        disable_web_page_preview=True  # Disable automatic link preview
     )
     
     return await add_served_chat(message.chat.id)
