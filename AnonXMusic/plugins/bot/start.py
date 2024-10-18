@@ -1,4 +1,5 @@
-import timeimport time
+import time
+
 from pyrogram import filters
 from pyrogram.enums import ChatType
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
@@ -21,10 +22,6 @@ from AnonXMusic.utils.formatters import get_readable_time
 from AnonXMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
-
-# Additional imports to be added
-import random  # For random functionality
-import requests  # For handling HTTP requests (e.g., image fetching)
 
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
