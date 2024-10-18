@@ -107,10 +107,10 @@ import random
 
 # A list of random image URLs
 START_IMAGES = [
-    "https://example.com/image1.jpg",
-    "https://example.com/image2.jpg",
-    "https://example.com/image3.jpg",
-    "https://example.com/image4.jpg",
+    "https://unitedcamps.in/Images/file_4109.jpg",
+    "https://unitedcamps.in/Images/file_4108.jpg",
+    "https://unitedcamps.in/Images/file_4111.jpg",
+    "https://unitedcamps.in/Images/file_4110.jpg",
     # Add more image URLs here
 ]
 
