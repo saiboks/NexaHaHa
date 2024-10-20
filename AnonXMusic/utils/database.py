@@ -684,3 +684,11 @@ async def delete_note(chat_id: int, name: str) -> bool:
 
 async def deleteall_notes(chat_id: int):
     return await notesdb.delete_one({"chat_id": chat_id})
+
+
+async def get_note(chat_id: int, name: str) -> Union[bool, dict]:
+    name = name.lower().strip()
+    _notes = await _get_notes(chat_id)
+    if name in _notes:
+        return _notes[name]
+    return False
