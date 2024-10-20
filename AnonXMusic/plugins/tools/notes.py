@@ -21,7 +21,7 @@ from AnonXMusic.utils.functions import (
     get_data_and_name,
 )
 from AnonXMusic.utils.keyboard import ikb
-from utils.permissions import adminsOnly, member_permissions
+from AnonXMusic.utils.permissions import adminsOnly, member_permissions
 
 
 def extract_urls(reply_markup):
