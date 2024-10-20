@@ -14,7 +14,7 @@ from AnonXMusic.utils.database import (
     get_note_names,
     save_note,
 )
-from utils.error import capture_err
+from AnonXMusic.utils.error import capture_err
 from AnonXMusic.utils.functions import (
     check_format,
     extract_text_and_keyb,
