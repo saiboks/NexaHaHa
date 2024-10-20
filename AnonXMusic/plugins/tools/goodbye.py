@@ -1,4 +1,4 @@
-simport datetime
+import datetime
 from re import findall
 
 from pyrogram import filters
