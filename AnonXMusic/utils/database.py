@@ -657,7 +657,6 @@ async def save_filter(chat_id: int, name: str, _filter: dict):
     )
 
 
-
 async def save_filter(chat_id: int, name: str, _filter: dict):
     name = name.lower().strip()
     _filters = await _get_filters(chat_id)
@@ -667,3 +666,17 @@ async def save_filter(chat_id: int, name: str, _filter: dict):
         {"$set": {"filters": _filters}},
         upsert=True,
     )
+
+
+async def delete_note(chat_id: int, name: str) -> bool:
+    notesd = await _get_notes(chat_id)
+    name = name.lower().strip()
+    if name in notesd:
+        del notesd[name]
+        await notesdb.update_one(
+            {"chat_id": chat_id},
+            {"$set": {"notes": notesd}},
+            upsert=True,
+        )
+        return True
+    return False
