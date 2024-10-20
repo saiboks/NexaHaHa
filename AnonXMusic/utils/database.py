@@ -692,3 +692,10 @@ async def get_note(chat_id: int, name: str) -> Union[bool, dict]:
     if name in _notes:
         return _notes[name]
     return False
+
+
+async def get_note_names(chat_id: int) -> List[str]:
+    _notes = []
+    for note in await _get_notes(chat_id):
+        _notes.append(note)
+    return _notes
