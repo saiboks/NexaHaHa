@@ -23,8 +23,8 @@ from AnonXMusic.utils.welcomedb import (
 )
 from AnonXMusic.utils.error import capture_err
 from AnonXMusic.utils.functions import check_format, extract_text_and_keyb
-from AnonXMuic.utils.keyboard import ikb
-from AnonXMusicutils.permissions import adminsOnly
+from AnonXMusic.utils.keyboard import ikb
+from AnonXMusic.utils.permissions import adminsOnly
 
 
 async def handle_left_member(member, chat):
