@@ -21,7 +21,7 @@ from AnonXMusic.utils.welcomedb import (
     set_greetings_on,
     set_greetings_off,
 )
-from utils.error import capture_err
+from AnonXMusic.utils.error import capture_err
 from AnonXMusic.utils.functions import check_format, extract_text_and_keyb
 from AnonXMuic.utils.keyboard import ikb
 from AnonXMusicutils.permissions import adminsOnly
