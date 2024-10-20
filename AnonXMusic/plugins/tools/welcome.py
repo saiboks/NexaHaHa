@@ -16,7 +16,7 @@ from AnonXMusic.misc import SUDOERS
 from .notes import extract_urls
 from AnonXMusic.utils.database import is_gbanned_user
 
-from AnonXMusic.utils import (
+from AnonXMusic.utils.welcomedb import (
     del_welcome,
     get_welcome,
     set_welcome,
