@@ -699,3 +699,13 @@ async def get_note_names(chat_id: int) -> List[str]:
     for note in await _get_notes(chat_id):
         _notes.append(note)
     return _notes
+
+
+async def save_note(chat_id: int, name: str, note: dict):
+    name = name.lower().strip()
+    _notes = await _get_notes(chat_id)
+    _notes[name] = note
+
+    await notesdb.update_one(
+        {"chat_id": chat_id}, {"$set": {"notes": _notes}}, upsert=True
+    )
