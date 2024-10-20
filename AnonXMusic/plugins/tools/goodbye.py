@@ -1,4 +1,4 @@
-import datetime
+simport datetime
 from re import findall
 
 from pyrogram import filters
@@ -13,7 +13,7 @@ from AnonXMusic import app
 from AnonXMusic.misc import SUDOERS
 from .notes import extract_urls
 from AnonXMusic.utils.database import is_gbanned_user
-from AnonXMusic.utils import (
+from AnonXMusic.utils.welcomedb import (
     del_goodbye,
     get_goodbye,
     set_goodbye,
