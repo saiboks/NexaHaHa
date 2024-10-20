@@ -16,13 +16,13 @@ from AnonXMusic.misc import SUDOERS
 from .notes import extract_urls
 from AnonXMusic.utils.database import is_gbanned_user
 
-from utils import (
+from AnonXMusic.utils import (
     del_welcome,
     get_welcome,
     set_welcome,
 )
 
-from utils.error import capture_err
+from AnonXMusic.utils.error import capture_err
 from AnonXMusic.utils.functions import check_format, extract_text_and_keyb
 from AnonXMusic.utils.keyboard import ikb
 from AnonXMusic.utils.permissions import adminsOnly
