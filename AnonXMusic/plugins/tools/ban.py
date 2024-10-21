@@ -180,7 +180,7 @@ async def banFunc(_, message: Message):
 import asyncio
 
 @app.on_message(
-    filters.command(["sban"]) & ~filters.private & ~BANNED_USERS
+    filters.command(["dban"]) & ~filters.private & ~BANNED_USERS
 )
 @adminsOnly("can_restrict_members")
 async def banFunc(_, message: Message):
