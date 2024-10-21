@@ -190,12 +190,14 @@ async def banFunc(_, message: Message):
 
 
 # dban
+import asyncio
+
 @app.on_message(
-    filters.command(["dban"]) & ~filters.private & ~BANNED_USERS
+    filters.command(["sban"]) & ~filters.private & ~BANNED_USERS
 )
 @adminsOnly("can_restrict_members")
 async def banFunc(_, message: Message):
-    user_id, reason = await extract_user_and_reason(message, sender_chat=True)
+    user_id = await extract_user(message, sender_chat=True)  # Updated to extract only user ID
 
     if not user_id:
         return await message.reply_text(
@@ -225,11 +227,7 @@ async def banFunc(_, message: Message):
             else "Anon"
         )
 
-    msg = (
-        f"<b>● ʙᴀɴɴᴇᴅ ᴜsᴇʀ ➠</b> {mention}\n"
-    )
-    if reason:
-        msg += f"<b>● ʀᴇᴀsᴏɴ ➠</b> {reason}"
+    msg = f"<b>● ʙᴀɴɴᴇᴅ ᴜsᴇʀ ➠</b> {mention}\n"
 
     # Ban the user
     await message.chat.ban_member(user_id)
@@ -239,8 +237,10 @@ async def banFunc(_, message: Message):
     if replied_message:
         await replied_message.delete()
 
-    # Send ban confirmation message
-    await message.reply_text(msg)
+    # Send ban confirmation message and delete it after 1 second
+    confirm_msg = await message.reply_text(msg)
+    await asyncio.sleep(1)  # Wait for 1 second
+    await confirm_msg.delete()
 
     # Delete the command message after processing
     await message.delete()
