@@ -169,11 +169,8 @@ async def banFunc(_, message: Message):
     # Send the "Nice knowing you!" message
     await message.reply_text("Nice knowing you!")
     
-    replied_message = message.reply_to_message
-    if replied_message:
-        message = replied_message
-    
-    await message.delete()  # Deletes the command message
+    # Delete only the command message, not the replied message
+    await message.delete()
 
 
 # dban
