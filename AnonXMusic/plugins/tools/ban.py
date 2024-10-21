@@ -174,19 +174,19 @@ async def banFunc(_, message: Message):
 
 
 # dban
-import asyncio
+
 
 @app.on_message(
-    filters.command(["dban"]) & ~filters.private & ~BANNED_USERS
+    filters.command(["ban"]) & ~filters.private & ~BANNED_USERS
 )
 @adminsOnly("can_restrict_members")
 async def banFunc(_, message: Message):
-    user_id = await extract_user(message, sender_chat=True)  # Updated to extract only user ID
+    user_id, reason = await extract_user_and_reason(message, sender_chat=True)
 
     if not user_id:
         return await message.reply_text(
-            "<b><u>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</u></b>\n"
-            "ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/sban</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
+            "<u><b>ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ.</b></u>\n"
+            "ᴛʜᴇ ᴄᴏᴍᴍᴀɴᴅ <b>/ban</b> ᴍᴜsᴛ ʙᴇ ᴜsᴇᴅ sᴘᴇᴄɪғʏɪɴɢ ᴜsᴇʀ <b>ᴜsᴇʀɴᴀᴍᴇ/ɪᴅ/ᴍᴇɴᴛɪᴏɴ ᴏʀ ʀᴇᴘʟʏɪɴɢ</b> ᴛᴏ ᴏɴᴇ ᴏғ ᴛʜᴇɪʀ ᴍᴇssᴀɢᴇs."
         )
     if user_id == app.id:
         return await message.reply_text("I can't ban myself, i can leave if you want.")
@@ -211,23 +211,29 @@ async def banFunc(_, message: Message):
             else "Anon"
         )
 
-    msg = f"<b>● ʙᴀɴɴᴇᴅ ᴜsᴇʀ ➠</b> {mention}\n"
-
-    # Ban the user
+    msg = (
+        f"<b>● ʙᴀɴɴᴇᴅ ᴜsᴇʀ ➠</b> {mention}\n"
+        f"<b>● ʙᴀɴɴᴇᴅ ʙʏ ➠</b> {message.from_user.mention if message.from_user else 'Anon'}\n"
+    )
+    if reason:
+        msg += f"<b>● ʀᴇᴀsᴏɴ ➠</b> {reason}"
+    
     await message.chat.ban_member(user_id)
 
-    # If reply exists, delete the replied message
+    # Delete the user's message if it was a reply
     replied_message = message.reply_to_message
     if replied_message:
         await replied_message.delete()
 
-    # Send ban confirmation message and delete it after 1 second
-    confirm_msg = await message.reply_text(msg)
-    await asyncio.sleep(1)  # Wait for 1 second
-    await confirm_msg.delete()
-
-    # Delete the command message after processing
+    # Delete the ban command message
     await message.delete()
+
+    # Optionally send the ban notification
+    sent_msg = await message.reply_text(msg)
+
+    # Delete the ban notification after a few seconds (optional)
+    await asyncio.sleep(5)
+    await sent_msg.delete()
 
 
 
